@@ -1,9 +1,9 @@
-# OpenAI compatibility
+# OpenAIとの互換性
 
 > [!NOTE]
-> OpenAI compatibility is experimental and is subject to major adjustments including breaking changes. For fully-featured access to the Ollama API, see the Ollama [Python library](https://github.com/ollama/ollama-python), [JavaScript library](https://github.com/ollama/ollama-js) and [REST API](https://github.com/ollama/ollama/blob/main/docs/api.md).
+> OpenAIとの互換性は試験段階であり、互換性の維持を含む大幅な調整が行われる可能性があります。Ollama APIのフル機能へのアクセスについては、Ollamaの[Pythonライブラリ](https://github.com/ollama/ollama-python)、[JavaScriptライブラリ](https://github.com/ollama/ollama-js)、[REST API](https://github.com/ollama/ollama/blob/main/docs/api.md)をご覧ください。
 
-Ollama provides experimental compatibility with parts of the [OpenAI API](https://platform.openai.com/docs/api-reference) to help connect existing applications to Ollama.
+Ollamaは、既存のアプリケーションをOllamaに接続できるように、[OpenAI API](https://platform.openai.com/docs/api-reference)の一部との試験的な互換性を提供しています。
 
 ## Usage
 
@@ -61,7 +61,7 @@ embeddings = client.embeddings.create(
 )
 ```
 
-#### Structured outputs
+#### 構造化された出力
 
 ```python
 from pydantic import BaseModel
@@ -278,23 +278,23 @@ curl http://localhost:11434/v1/embeddings \
 - [ ] `user`
 - [ ] `n`
 
-#### Notes
+#### 注記
 
-- `prompt` currently only accepts a string
+- `prompt` は現在文字列のみを受け入れます
 
 ### `/v1/models`
 
-#### Notes
+#### 注記
 
-- `created` corresponds to when the model was last modified
-- `owned_by` corresponds to the ollama username, defaulting to `"library"`
+- `created` はモデルの最終更新日時に対応します
+- `owned_by` は ollama のユーザー名に対応し、デフォルトは `"library"` です
 
 ### `/v1/models/{model}`
 
-#### Notes
+#### 注記
 
-- `created` corresponds to when the model was last modified
-- `owned_by` corresponds to the ollama username, defaulting to `"library"`
+- `created` はモデルの最終更新日時に対応します
+- `owned_by` は ollama のユーザー名に対応し、デフォルトは `"library"` です
 
 ### `/v1/embeddings`
 
@@ -312,21 +312,21 @@ curl http://localhost:11434/v1/embeddings \
 
 ## Models
 
-Before using a model, pull it locally `ollama pull`:
+モデルを使用する前に、ローカルでプルします `ollama pull`:
 
 ```shell
 ollama pull llama3.2
 ```
 
-### Default model names
+### デフォルトのモデル名
 
-For tooling that relies on default OpenAI model names such as `gpt-3.5-turbo`, use `ollama cp` to copy an existing model name to a temporary name:
+`gpt-3.5-turbo` などのデフォルトの OpenAI モデル名に依存するツールの場合、`ollama cp` を使用して既存のモデル名を一時的な名前にコピーします。
 
 ```shell
 ollama cp llama3.2 gpt-3.5-turbo
 ```
 
-Afterwards, this new model name can be specified the `model` field:
+その後、この新しいモデル名を `model` フィールドに指定できます:
 
 ```shell
 curl http://localhost:11434/v1/chat/completions \
@@ -342,16 +342,16 @@ curl http://localhost:11434/v1/chat/completions \
     }'
 ```
 
-### Setting the context size
+### コンテキストサイズの設定
 
-The OpenAI API does not have a way of setting the context size for a model. If you need to change the context size, create a `Modelfile` which looks like:
+OpenAI API には、モデルのコンテキストサイズを設定する方法がありません。コンテキストサイズを変更する必要がある場合は、次のような `Modelfile` を作成してください。
 
 ```
 FROM <some model>
 PARAMETER num_ctx <context size>
 ```
 
-Use the `ollama create mymodel` command to create a new model with the updated context size. Call the API with the updated model name:
+`ollama create mymodel` コマンドを使用して、更新されたコンテキストサイズで新しいモデルを作成します。更新されたモデル名でAPIを呼び出します:
 
 ```shell
 curl http://localhost:11434/v1/chat/completions \

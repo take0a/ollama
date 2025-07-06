@@ -1,106 +1,106 @@
-# Importing a model
+# モデルのインポート
 
-## Table of Contents
+## 目次
 
-  * [Importing a Safetensors adapter](#Importing-a-fine-tuned-adapter-from-Safetensors-weights)
-  * [Importing a Safetensors model](#Importing-a-model-from-Safetensors-weights)
-  * [Importing a GGUF file](#Importing-a-GGUF-based-model-or-adapter)
-  * [Sharing models on ollama.com](#Sharing-your-model-on-ollamacom)
+* [Safetensors アダプターのインポート](#Importing-a-fine-tuned-adapter-from-Safetensors-weights)
+* [Safetensors モデルのインポート](#Importing-a-model-from-Safetensors-weights)
+* [GGUF ファイルのインポート](#Importing-a-GGUF-based-model-or-adapter)
+* [ollama.com でのモデルの共有](#Sharing-your-model-on-ollamacom)
 
 ## Importing a fine tuned adapter from Safetensors weights
 
-First, create a `Modelfile` with a `FROM` command pointing at the base model you used for fine tuning, and an `ADAPTER` command which points to the directory with your Safetensors adapter:
+まず、微調整に使用した基本モデルを指す `FROM` コマンドと、Safetensors アダプターがあるディレクトリを指す `ADAPTER` コマンドを使用して `Modelfile` を作成します。
 
 ```dockerfile
 FROM <base model name>
 ADAPTER /path/to/safetensors/adapter/directory
 ```
 
-Make sure that you use the same base model in the `FROM` command as you used to create the adapter otherwise you will get erratic results. Most frameworks use different quantization methods, so it's best to use non-quantized (i.e. non-QLoRA) adapters. If your adapter is in the same directory as your `Modelfile`, use `ADAPTER .` to specify the adapter path.
+`FROM` コマンドでは、アダプタの作成に使用したのと同じベースモデルを使用してください。そうでないと、不安定な結果になります。多くのフレームワークは異なる量子化手法を使用しているため、量子化されていない（つまりQLoRAではない）アダプタを使用することをお勧めします。アダプタが `Modelfile` と同じディレクトリにある場合は、`ADAPTER .` を使用してアダプタのパスを指定してください。
 
-Now run `ollama create` from the directory where the `Modelfile` was created:
+次に、`Modelfile` が作成されたディレクトリから `ollama create` を実行します:
 
 ```shell
 ollama create my-model
 ```
 
-Lastly, test the model:
+最後に、モデルをテストします:
 
 ```shell
 ollama run my-model
 ```
 
-Ollama supports importing adapters based on several different model architectures including:
+Ollamaは、以下のモデルアーキテクチャに基づくアダプターのインポートをサポートしています。
 
-  * Llama (including Llama 2, Llama 3, Llama 3.1, and Llama 3.2);
-  * Mistral (including Mistral 1, Mistral 2, and Mixtral); and
-  * Gemma (including Gemma 1 and Gemma 2)
+* Llama（Llama 2、Llama 3、Llama 3.1、Llama 3.2を含む）
+* Mistral（Mistral 1、Mistral 2、Mixtralを含む）
+* Gemma（Gemma 1およびGemma 2を含む）
 
-You can create the adapter using a fine tuning framework or tool which can output adapters in the Safetensors format, such as:
+Safetensors形式でアダプターを出力できるファインチューニングフレームワークまたはツールを使用してアダプターを作成できます。以下に例を示します。
 
-  * Hugging Face [fine tuning framework](https://huggingface.co/docs/transformers/en/training)
-  * [Unsloth](https://github.com/unslothai/unsloth)
-  * [MLX](https://github.com/ml-explore/mlx)
-
+* Hugging Face [ファインチューニングフレームワーク](https://huggingface.co/docs/transformers/en/training)
+* [Unsloth](https://github.com/unslothai/unsloth)
+* [MLX](https://github.com/ml-explore/mlx)
 
 ## Importing a model from Safetensors weights
 
-First, create a `Modelfile` with a `FROM` command which points to the directory containing your Safetensors weights:
+まず、Safetensors の重みを含むディレクトリを指す `FROM` コマンドを使用して `Modelfile` を作成します:
 
 ```dockerfile
 FROM /path/to/safetensors/directory
 ```
 
-If you create the Modelfile in the same directory as the weights, you can use the command `FROM .`.
+重みと同じディレクトリにモデルファイルを作成する場合は、`FROM .` コマンドを使用できます。
 
-Now run the `ollama create` command from the directory where you created the `Modelfile`:
+`Modelfile` を作成したディレクトリから `ollama create` コマンドを実行します:
 
 ```shell
 ollama create my-model
 ```
 
-Lastly, test the model:
+最後に、モデルをテストします:
 
 ```shell
 ollama run my-model
 ```
 
-Ollama supports importing models for several different architectures including:
+Ollamaは、以下の様々なアーキテクチャのモデルのインポートをサポートしています。
 
-  * Llama (including Llama 2, Llama 3, Llama 3.1, and Llama 3.2);
-  * Mistral (including Mistral 1, Mistral 2, and Mixtral);
-  * Gemma (including Gemma 1 and Gemma 2); and
-  * Phi3
+* Llama（Llama 2、Llama 3、Llama 3.1、Llama 3.2を含む）
+* Mistral（Mistral 1、Mistral 2、Mixtralを含む）
+* Gemma（Gemma 1、Gemma 2を含む）
+* Phi3
 
-This includes importing foundation models as well as any fine tuned models which have been _fused_ with a foundation model.
+これには、基礎モデルだけでなく、基礎モデルと融合された微調整モデルのインポートも含まれます。
+
 ## Importing a GGUF based model or adapter
 
-If you have a GGUF based model or adapter it is possible to import it into Ollama. You can obtain a GGUF model or adapter by:
+GGUFベースのモデルまたはアダプターをお持ちの場合は、Ollamaにインポートできます。GGUFモデルまたはアダプターは以下の方法で入手できます。
 
-  * converting a Safetensors model with the `convert_hf_to_gguf.py` from Llama.cpp; 
-  * converting a Safetensors adapter with the `convert_lora_to_gguf.py` from Llama.cpp; or
-  * downloading a model or adapter from a place such as HuggingFace
+* Llama.cppの`convert_hf_to_gguf.py`を使用してSafetensorsモデルを変換する。
+* Llama.cppの`convert_lora_to_gguf.py`を使用してSafetensorsアダプターを変換する。
+* HuggingFaceなどのサイトからモデルまたはアダプターをダウンロードする。
 
-To import a GGUF model, create a `Modelfile` containing:
+GGUFモデルをインポートするには、以下の内容を含む`Modelfile`を作成します。
 
 ```dockerfile
 FROM /path/to/file.gguf
 ```
 
-For a GGUF adapter, create the `Modelfile` with:
+GGUF アダプタの場合は、次のように `Modelfile` を作成します。
 
 ```dockerfile
 FROM <model name>
 ADAPTER /path/to/file.gguf
 ```
 
-When importing a GGUF adapter, it's important to use the same base model as the base model that the adapter was created with. You can use:
+GGUFアダプタをインポートする際は、アダプタの作成に使用したベースモデルと同じベースモデルを使用することが重要です。以下のモデルを使用できます。
 
- * a model from Ollama
- * a GGUF file
- * a Safetensors based model 
+* Ollamaのモデル
+* GGUFファイル
+* Safetensorsベースのモデル
 
-Once you have created your `Modelfile`, use the `ollama create` command to build the model.
+`Modelfile`を作成したら、`ollama create`コマンドを使用してモデルをビルドします。
 
 ```shell
 ollama create my-model
@@ -108,17 +108,17 @@ ollama create my-model
 
 ## Quantizing a Model
 
-Quantizing a model allows you to run models faster and with less memory consumption but at reduced accuracy. This allows you to run a model on more modest hardware.
+モデルを量子化すると、モデルの実行速度が向上し、メモリ消費量も削減されますが、精度は低下します。これにより、より低性能のハードウェアでもモデルを実行できるようになります。
 
-Ollama can quantize FP16 and FP32 based models into different quantization levels using the `-q/--quantize` flag with the `ollama create` command.
+Ollamaは、`ollama create`コマンドに`-q/--quantize`フラグを指定することで、FP16およびFP32ベースのモデルを異なる量子化レベルに量子化できます。
 
-First, create a Modelfile with the FP16 or FP32 based model you wish to quantize.
+まず、量子化したいFP16またはFP32ベースのモデルを含むモデルファイルを作成します。
 
 ```dockerfile
 FROM /path/to/my/gemma/f16/model
 ```
 
-Use `ollama create` to then create the quantized model.
+次に、`ollama create` を使用して量子化モデルを作成します。
 
 ```shell
 $ ollama create --quantize q4_K_M mymodel
@@ -142,31 +142,30 @@ success
 
 ## Sharing your model on ollama.com
 
-You can share any model you have created by pushing it to [ollama.com](https://ollama.com) so that other users can try it out.
+作成したモデルは、[ollama.com](https://ollama.com) にプッシュすることで共有でき、他のユーザーに試用してもらうことができます。
 
-First, use your browser to go to the [Ollama Sign-Up](https://ollama.com/signup) page. If you already have an account, you can skip this step.
+まず、ブラウザを使って [Ollama サインアップ](https://ollama.com/signup) ページにアクセスしてください。既にアカウントをお持ちの場合は、この手順をスキップしてください。
 
 <img src="images/signup.png" alt="Sign-Up" width="40%">
 
-The `Username` field will be used as part of your model's name (e.g. `jmorganca/mymodel`), so make sure you are comfortable with the username that you have selected.
+「ユーザー名」フィールドはモデル名の一部として使用されます（例：jmorganca/mymodel）。選択したユーザー名に間違いがないかご確認ください。
 
-Now that you have created an account and are signed-in, go to the [Ollama Keys Settings](https://ollama.com/settings/keys) page.
+アカウントを作成してサインインしたら、[Ollama Keys Settings](https://ollama.com/settings/keys) ページに移動します。
 
-Follow the directions on the page to determine where your Ollama Public Key is located.
+ページの指示に従って、Ollama 公開鍵の場所を確認してください。
 
 <img src="images/ollama-keys.png" alt="Ollama Keys" width="80%">
 
-Click on the `Add Ollama Public Key` button, and copy and paste the contents of your Ollama Public Key into the text field.
+「Ollama公開鍵を追加」ボタンをクリックし、Ollama公開鍵の内容をコピーしてテキストフィールドに貼り付けてください。
 
-To push a model to [ollama.com](https://ollama.com), first make sure that it is named correctly with your username. You may have to use the `ollama cp` command to copy
-your model to give it the correct name. Once you're happy with your model's name, use the `ollama push` command to push it to [ollama.com](https://ollama.com).
+モデルを[ollama.com](https://ollama.com)にプッシュするには、まずモデル名がユーザー名に基づいて正しく設定されていることを確認してください。正しい名前を付けるには、`ollama cp`コマンドを使用してモデルをコピーする必要がある場合があります。モデル名が決まったら、`ollama push`コマンドを使用して[ollama.com](https://ollama.com)にプッシュしてください。
 
 ```shell
 ollama cp mymodel myuser/mymodel
 ollama push myuser/mymodel
 ```
 
-Once your model has been pushed, other users can pull and run it by using the command:
+モデルがプッシュされると、他のユーザーは次のコマンドを使用してモデルをプルして実行できます。
 
 ```shell
 ollama run myuser/mymodel

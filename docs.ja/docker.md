@@ -1,4 +1,4 @@
-# Ollama Docker image
+# Ollama Dockerイメージ
 
 ### CPU only
 
@@ -7,10 +7,10 @@ docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 ```
 
 ### Nvidia GPU
-Install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation).
+[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation) をインストールします。
 
-#### Install with Apt
-1.  Configure the repository
+#### Aptでインストール
+1. リポジトリを設定する
 
     ```shell
     curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey \
@@ -21,58 +21,58 @@ Install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-
     sudo apt-get update
     ```
 
-2.  Install the NVIDIA Container Toolkit packages
+2. NVIDIA Container Toolkitパッケージをインストールする
 
     ```shell
     sudo apt-get install -y nvidia-container-toolkit
     ```
 
-#### Install with Yum or Dnf
-1.  Configure the repository
+#### YumまたはDnfでインストール
+1. リポジトリを設定する
 
     ```shell
     curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo \
         | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
     ```
 
-2. Install the NVIDIA Container Toolkit packages
+2. NVIDIA Container Toolkitパッケージをインストールする
 
     ```shell
     sudo yum install -y nvidia-container-toolkit
     ```
 
-#### Configure Docker to use Nvidia driver
+#### Nvidia ドライバーを使用するように Docker を構成する
 
 ```shell
 sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
 ```
 
-#### Start the container
+#### コンテナを起動する
 
 ```shell
 docker run -d --gpus=all -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 ```
 
 > [!NOTE]  
-> If you're running on an NVIDIA JetPack system, Ollama can't automatically discover the correct JetPack version. Pass the environment variable JETSON_JETPACK=5 or JETSON_JETPACK=6 to the container to select version 5 or 6.
+> NVIDIA JetPack システムで実行している場合、Ollama は正しい JetPack バージョンを自動的に検出できません。コンテナに環境変数 JETSON_JETPACK=5 または JETSON_JETPACK=6 を渡して、バージョン 5 または 6 を選択してください。
 
 ### AMD GPU
 
-To run Ollama using Docker with AMD GPUs, use the `rocm` tag and the following command:
+AMD GPU を搭載した Docker を使用して Ollama を実行するには、`rocm` タグと次のコマンドを使用します。
 
 ```shell
 docker run -d --device /dev/kfd --device /dev/dri -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama:rocm
 ```
 
-### Run model locally
+### モデルをローカルで実行
 
-Now you can run a model:
+これでモデルを実行できます:
 
 ```shell
 docker exec -it ollama ollama run llama3.2
 ```
 
-### Try different models
+### さまざまなモデルを試してみてください
 
-More models can be found on the [Ollama library](https://ollama.com/library).
+[Ollamaライブラリ](https://ollama.com/library) でさらに多くのモデルを見つけることができます。

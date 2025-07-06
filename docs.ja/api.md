@@ -1,33 +1,33 @@
 # API
 
-## Endpoints
+## エンドポイント
 
-- [Generate a completion](#generate-a-completion)
-- [Generate a chat completion](#generate-a-chat-completion)
-- [Create a Model](#create-a-model)
-- [List Local Models](#list-local-models)
-- [Show Model Information](#show-model-information)
-- [Copy a Model](#copy-a-model)
-- [Delete a Model](#delete-a-model)
-- [Pull a Model](#pull-a-model)
-- [Push a Model](#push-a-model)
-- [Generate Embeddings](#generate-embeddings)
-- [List Running Models](#list-running-models)
-- [Version](#version)
+- [補完を生成する](#generate-a-completion)
+- [チャット補完を生成する](#generate-a-chat-c​​ompletion)
+- [モデルを作成する](#create-a-model)
+- [ローカルモデルの一覧を表示する](#list-local-models)
+- [モデル情報を表示する](#show-model-information)
+- [モデルをコピーする](#copy-a-model)
+- [モデルを削除する](#delete-a-model)
+- [モデルをプルする](#pull-a-model)
+- [モデルをプッシュする](#push-a-model)
+- [埋め込みを生成する](#generate-embeddings)
+- [実行中のモデルの一覧を表示する](#list-running-models)
+- [バージョンを表示する](#version)
 
-## Conventions
+## 規約
 
-### Model names
+### モデル名
 
-Model names follow a `model:tag` format, where `model` can have an optional namespace such as `example/model`. Some examples are `orca-mini:3b-q8_0` and `llama3:70b`. The tag is optional and, if not provided, will default to `latest`. The tag is used to identify a specific version.
+モデル名は「モデル:タグ」という形式に従います。「モデル」には「example/model」のような任意の名前空間を指定できます。例としては、「orca-mini:3b-q8_0」や「llama3:70b」などがあります。タグは任意で、指定しない場合はデフォルトで「latest」になります。タグは特定のバージョンを識別するために使用されます。
 
-### Durations
+### 期間
 
-All durations are returned in nanoseconds.
+すべての期間はナノ秒単位で返されます。
 
-### Streaming responses
+### ストリーミングレスポンス
 
-Certain endpoints stream responses as JSON objects. Streaming can be disabled by providing `{"stream": false}` for these endpoints.
+一部のエンドポイントは、レスポンスをJSONオブジェクトとしてストリーミングします。これらのエンドポイントに `{"stream": false}` を指定することで、ストリーミングを無効にすることができます。
 
 ## Generate a completion
 
@@ -35,37 +35,37 @@ Certain endpoints stream responses as JSON objects. Streaming can be disabled by
 POST /api/generate
 ```
 
-Generate a response for a given prompt with a provided model. This is a streaming endpoint, so there will be a series of responses. The final response object will include statistics and additional data from the request.
+指定されたモデルを使用して、指定されたプロンプトに対するレスポンスを生成します。これはストリーミングエンドポイントであるため、一連のレスポンスが生成されます。最終的なレスポンスオブジェクトには、リクエストからの統計情報と追加データが含まれます。
 
-### Parameters
+### パラメータ
 
-- `model`: (required) the [model name](#model-names)
-- `prompt`: the prompt to generate a response for
-- `suffix`: the text after the model response
-- `images`: (optional) a list of base64-encoded images (for multimodal models such as `llava`)
-- `think`: (for thinking models) should the model think before responding?
+- `model`: (必須) [モデル名](#model-names)
+- `prompt`: レスポンスを生成するためのプロンプト
+- `suffix`: モデルのレスポンスに続くテキスト
+- `images`: (オプション) base64 エンコードされた画像のリスト (`llava` などのマルチモーダルモデルの場合)
+- `think`: (思考型モデルの場合) モデルはレスポンスを返す前に考える必要があるか?
 
-Advanced parameters (optional):
+詳細パラメータ（オプション）
 
-- `format`: the format to return a response in. Format can be `json` or a JSON schema
-- `options`: additional model parameters listed in the documentation for the [Modelfile](./modelfile.md#valid-parameters-and-values) such as `temperature`
-- `system`: system message to (overrides what is defined in the `Modelfile`)
-- `template`: the prompt template to use (overrides what is defined in the `Modelfile`)
-- `stream`: if `false` the response will be returned as a single response object, rather than a stream of objects
-- `raw`: if `true` no formatting will be applied to the prompt. You may choose to use the `raw` parameter if you are specifying a full templated prompt in your request to the API
-- `keep_alive`: controls how long the model will stay loaded into memory following the request (default: `5m`)
-- `context` (deprecated): the context parameter returned from a previous request to `/generate`, this can be used to keep a short conversational memory
+- `format`: レスポンスを返す形式。`json` または JSON スキーマを指定できます。
+- `options`: [Modelfile](./modelfile.md#valid-parameters-and-values) のドキュメントに記載されている追加のモデルパラメータ（`temperature` など）
+- `system`: 送信するシステムメッセージ（`Modelfile` で定義されている内容をオーバーライドします）
+- `template`: 使用するプロンプトテンプレート（`Modelfile` で定義されている内容をオーバーライドします）
+- `stream`: `false` の場合、レスポンスはオブジェクトのストリームではなく、単一のレスポンスオブジェクトとして返されます。
+- `raw`: `true` の場合、プロンプトにフォーマットは適用されません。 API へのリクエストで完全なテンプレートプロンプトを指定する場合は、`raw` パラメータを使用できます。
+- `keep_alive`: リクエスト後にモデルがメモリにロードされた状態を維持する時間を制御します (デフォルト: `5m`)
+- `context` (非推奨): 以前の `/generate` リクエストから返されたコンテキストパラメータ。これは、短い会話メモリを保持するために使用できます。
 
-#### Structured outputs
+#### 構造化出力
 
-Structured outputs are supported by providing a JSON schema in the `format` parameter. The model will generate a response that matches the schema. See the [structured outputs](#request-structured-outputs) example below.
+`format` パラメータに JSON スキーマを指定することで、構造化出力がサポートされます。モデルはスキーマに一致するレスポンスを生成します。以下の [構造化出力](#request-structured-outputs) の例をご覧ください。
 
-#### JSON mode
+#### JSON モード
 
-Enable JSON mode by setting the `format` parameter to `json`. This will structure the response as a valid JSON object. See the JSON mode [example](#request-json-mode) below.
+`format` パラメータを `json` に設定することで、JSON モードを有効にできます。これにより、レスポンスは有効な JSON オブジェクトとして構造化されます。以下の JSON モードの [例](#request-json-mode) を参照してください。
 
 > [!IMPORTANT]
-> It's important to instruct the model to use JSON in the `prompt`. Otherwise, the model may generate large amounts whitespace.
+> `prompt` でモデルに JSON を使用するように指示することが重要です。そうしないと、モデルが大量の空白を生成する可能性があります。
 
 ### Examples
 
@@ -82,7 +82,7 @@ curl http://localhost:11434/api/generate -d '{
 
 ##### Response
 
-A stream of JSON objects is returned:
+JSON オブジェクトのストリームが返されます:
 
 ```json
 {
@@ -93,18 +93,18 @@ A stream of JSON objects is returned:
 }
 ```
 
-The final response in the stream also includes additional data about the generation:
+ストリーム内の最終レスポンスには、レスポンス生成に関する追加データも含まれます。
 
-- `total_duration`: time spent generating the response
-- `load_duration`: time spent in nanoseconds loading the model
-- `prompt_eval_count`: number of tokens in the prompt
-- `prompt_eval_duration`: time spent in nanoseconds evaluating the prompt
-- `eval_count`: number of tokens in the response
-- `eval_duration`: time in nanoseconds spent generating the response
-- `context`: an encoding of the conversation used in this response, this can be sent in the next request to keep a conversational memory
-- `response`: empty if the response was streamed, if not streamed, this will contain the full response
+- `total_duration`: レスポンス生成に要した時間
+- `load_duration`: モデルのロードに要した時間（ナノ秒）
+- `prompt_eval_count`: プロンプト内のトークン数
+- `prompt_eval_duration`: プロンプトの評価に要した時間（ナノ秒）
+- `eval_count`: レスポンス内のトークン数
+- `eval_duration`: レスポンス生成に要した時間（ナノ秒）
+- `context`: このレスポンスで使用された会話のエンコード。会話メモリを保持するために、次のリクエストで送信できます。
+- `response`: レスポンスがストリーミングされた場合は空、ストリーミングされなかった場合、レスポンス全体が含まれます。
 
-To calculate how fast the response is generated in tokens per second (token/s), divide `eval_count` / `eval_duration` * `10^9`.
+レスポンスの生成速度を1秒あたりのトークン数（token/s）で計算するには、「`eval_count` / `eval_duration` * `10^9`」で割ります。
 
 ```json
 {
@@ -126,7 +126,7 @@ To calculate how fast the response is generated in tokens per second (token/s), 
 
 ##### Request
 
-A response can be received in one reply when streaming is off.
+ストリーミングがオフの場合、1 回の応答で応答を受信できます。
 
 ```shell
 curl http://localhost:11434/api/generate -d '{
@@ -138,7 +138,7 @@ curl http://localhost:11434/api/generate -d '{
 
 ##### Response
 
-If `stream` is set to `false`, the response will be a single JSON object:
+`stream` が `false` に設定されている場合、応答は単一の JSON オブジェクトになります:
 
 ```json
 {

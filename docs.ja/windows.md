@@ -1,90 +1,83 @@
 # Ollama Windows
 
-Welcome to Ollama for Windows.
+Ollama for Windows へようこそ。
 
-No more WSL required!
+もう WSL は不要です！
 
-Ollama now runs as a native Windows application, including NVIDIA and AMD Radeon GPU support.
-After installing Ollama for Windows, Ollama will run in the background and
-the `ollama` command line is available in `cmd`, `powershell` or your favorite
-terminal application. As usual the Ollama [api](./api.md) will be served on
-`http://localhost:11434`.
+Ollama は、NVIDIA および AMD Radeon GPU のサポートを含むネイティブ Windows アプリケーションとして動作します。
+Ollama for Windows をインストールすると、Ollama はバックグラウンドで実行され、`ollama` コマンドラインは `cmd`、`powershell`、またはお好みのターミナルアプリケーションで使用できます。通常通り、Ollama [api](./api.md) は `http://localhost:11434` で提供されます。
 
-## System Requirements
+## システム要件
 
-* Windows 10 22H2 or newer, Home or Pro
-* NVIDIA 452.39 or newer Drivers if you have an NVIDIA card
-* AMD Radeon Driver https://www.amd.com/en/support if you have a Radeon card
+* Windows 10 22H2以降、HomeまたはPro
+* NVIDIAカードをお持ちの場合、NVIDIA 452.39以降のドライバー
+* Radeonカードをお持ちの場合、AMD Radeonドライバー https://www.amd.com/en/support
 
-Ollama uses unicode characters for progress indication, which may render as unknown squares in some older terminal fonts in Windows 10. If you see this, try changing your terminal font settings.
+Ollamaは進行状況表示にUnicode文字を使用します。Windows 10の一部の古いターミナルフォントでは、不明な四角形として表示されることがあります。このような場合は、ターミナルのフォント設定を変更してみてください。
 
-## Filesystem Requirements
+## ファイルシステム要件
 
-The Ollama install does not require Administrator, and installs in your home directory by default.  You'll need at least 4GB of space for the binary install.  Once you've installed Ollama, you'll need additional space for storing the Large Language models, which can be tens to hundreds of GB in size.  If your home directory doesn't have enough space, you can change where the binaries are installed, and where the models are stored.
+Ollamaのインストールには管理者権限は不要で、デフォルトでホームディレクトリにインストールされます。バイナリのインストールには少なくとも4GBの空き容量が必要です。Ollamaのインストール後、数十GBから数百GBになることもある大規模言語モデルを保存するための追加の空き容量が必要になります。ホームディレクトリに十分な空き容量がない場合は、バイナリのインストール場所とモデルの保存場所を変更できます。
 
-### Changing Install Location
+### インストール場所の変更
 
-To install the Ollama application in a location different than your home directory, start the installer with the following flag
+Ollamaアプリケーションをホームディレクトリ以外の場所にインストールするには、次のフラグを指定してインストーラを起動してください。
 
 ```powershell
 OllamaSetup.exe /DIR="d:\some\location"
 ```
 
-### Changing Model Location
+### モデルの場所の変更
 
-To change where Ollama stores the downloaded models instead of using your home directory, set the environment variable `OLLAMA_MODELS` in your user account.
+Ollamaがダウンロードしたモデルを保存する場所をホームディレクトリではなく変更するには、ユーザーアカウントで環境変数「OLLAMA_MODELS」を設定します。
 
-1. Start the Settings (Windows 11) or Control Panel (Windows 10) application and search for _environment variables_.
+1. 設定（Windows 11）またはコントロールパネル（Windows 10）を起動し、「環境変数」を検索します。
 
-2. Click on _Edit environment variables for your account_.
+2. 「アカウントの環境変数を編集」をクリックします。
 
-3. Edit or create a new variable for your user account for `OLLAMA_MODELS` where you want the models stored
+3. モデルを保存する場所として、ユーザーアカウントの環境変数「OLLAMA_MODELS」を編集または新規作成します。
 
-4. Click OK/Apply to save.
+4. 「OK/適用」をクリックして保存します。
 
-If Ollama is already running, Quit the tray application and relaunch it from the Start menu, or a new terminal started after you saved the environment variables.
+Ollamaがすでに実行されている場合は、トレイアプリケーションを終了し、スタートメニューから再起動するか、環境変数を保存した後に新しいターミナルを起動してください。
 
-## API Access
+## API アクセス
 
-Here's a quick example showing API access from `powershell`
+`powershell` からの API アクセスを示す簡単な例を以下に示します。
 
 ```powershell
 (Invoke-WebRequest -method POST -Body '{"model":"llama3.2", "prompt":"Why is the sky blue?", "stream": false}' -uri http://localhost:11434/api/generate ).Content | ConvertFrom-json
 ```
 
-## Troubleshooting
+## トラブルシューティング
 
-Ollama on Windows stores files in a few different locations.  You can view them in
-the explorer window by hitting `<Ctrl>+R` and type in:
-- `explorer %LOCALAPPDATA%\Ollama` contains logs, and downloaded updates
-    - *app.log* contains most resent logs from the GUI application
-    - *server.log* contains the most recent server logs
-    - *upgrade.log* contains log output for upgrades
-- `explorer %LOCALAPPDATA%\Programs\Ollama` contains the binaries (The installer adds this to your user PATH)
-- `explorer %HOMEPATH%\.ollama` contains models and configuration
+Windows 版 Ollama は、ファイルを複数の場所に保存します。
+エクスプローラーウィンドウで `<Ctrl>+R` を押して以下のパスを入力すると、ファイルを表示できます。
+- `explorer %LOCALAPPDATA%\Ollama` には、ログとダウンロードしたアップデートが含まれています。
+    - *app.log* には、GUI アプリケーションから送信された最新のログが含まれています。
+    - *server.log* には、最新のサーバーログが含まれています。
+    - *upgrade.log* には、アップグレードのログ出力が含まれています。
+- `explorer %LOCALAPPDATA%\Programs\Ollama` には、バイナリが含まれています（インストーラーによってユーザー PATH に追加されます）。
+- `explorer %HOMEPATH%\.ollama` には、モデルと設定が含まれています。
 
-## Uninstall
+## アンインストール
 
-The Ollama Windows installer registers an Uninstaller application.  Under `Add or remove programs` in Windows Settings, you can uninstall Ollama.
+Ollama Windowsインストーラーは、アンインストーラーアプリケーションを登録します。Windows設定の「プログラムの追加と削除」からOllamaをアンインストールできます。
 
 > [!NOTE]
-> If you have [changed the OLLAMA_MODELS location](#changing-model-location), the installer will not remove your downloaded models
+> [OLLAMA_MODELSの場所を変更](#changing-model-location)した場合、インストーラーはダウンロードしたモデルを削除しません。
 
 
-## Standalone CLI
+## スタンドアロンCLI
 
-The easiest way to install Ollama on Windows is to use the `OllamaSetup.exe`
-installer. It installs in your account without requiring Administrator rights.
-We update Ollama regularly to support the latest models, and this installer will
-help you keep up to date.
+WindowsにOllamaをインストールする最も簡単な方法は、`OllamaSetup.exe`インストーラを使用することです。
 
-If you'd like to install or integrate Ollama as a service, a standalone
-`ollama-windows-amd64.zip` zip file is available containing only the Ollama CLI
-and GPU library dependencies for Nvidia.  If you have an AMD GPU, also download
-and extract the additional ROCm package `ollama-windows-amd64-rocm.zip` into the
-same directory.  This allows for embedding Ollama in existing applications, or
-running it as a system service via `ollama serve` with tools such as
-[NSSM](https://nssm.cc/). 
+このインストーラは、管理者権限を必要とせずに、アカウントにインストールされます。
+Ollamaは最新モデルに対応するために定期的にアップデートされており、このインストーラを使用すると最新の状態を維持できます。
 
-> [!NOTE]  
-> If you are upgrading from a prior version, you should remove the old directories first.
+Ollamaをサービスとしてインストールまたは統合する場合は、Ollama CLIとNvidiaのGPUライブラリ依存関係のみを含むスタンドアロンの`ollama-windows-amd64.zip` zipファイルをご利用いただけます。
+AMD GPUをお使いの場合は、追加のROCmパッケージ`ollama-windows-amd64-rocm.zip`もダウンロードして、同じディレクトリに解凍してください。
+これにより、Ollamaを既存のアプリケーションに組み込んだり、[NSSM](https://nssm.cc/)などのツールを使用して`ollama serve`経由でシステムサービスとして実行したりすることができます。
+
+> [!NOTE]
+> 以前のバージョンからアップグレードする場合は、まず古いディレクトリを削除する必要があります。

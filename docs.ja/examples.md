@@ -1,17 +1,17 @@
 # Examples
 
-This directory contains different examples of using Ollama.
+このディレクトリには、Ollama のさまざまな使用例が含まれています。
 
 ## Python examples
-Ollama Python examples at [ollama-python/examples](https://github.com/ollama/ollama-python/tree/main/examples)
+Ollama Python の例は [ollama-python/examples](https://github.com/ollama/ollama-python/tree/main/examples) にあります。
 
 
 ## JavaScript examples
-Ollama JavaScript examples at [ollama-js/examples](https://github.com/ollama/ollama-js/tree/main/examples)
+Ollama JavaScript の例は [ollama-js/examples](https://github.com/ollama/ollama-js/tree/main/examples) にあります。
 
 
 ## OpenAI compatibility examples
-Ollama OpenAI compatibility examples at [ollama/examples/openai](../docs/openai.md)
+Ollama OpenAI 互換性の例は [ollama/examples/openai](../docs.ja/openai.md) をご覧ください
 
 
 ## Community examples

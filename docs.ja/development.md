@@ -1,11 +1,11 @@
-# Development
+# 開発環境
 
-Install prerequisites:
+インストールの前提条件:
 
 - [Go](https://go.dev/doc/install)
-- C/C++ Compiler e.g. Clang on macOS, [TDM-GCC](https://github.com/jmeubank/tdm-gcc/releases/latest) (Windows amd64) or [llvm-mingw](https://github.com/mstorsjo/llvm-mingw) (Windows arm64), GCC/Clang on Linux.
+- C/C++ コンパイラ (例: macOS の場合は Clang、Windows amd64 の場合は [TDM-GCC](https://github.com/jmeubank/tdm-gcc/releases/latest) または Windows arm64 の場合は [llvm-mingw](https://github.com/mstorsjo/llvm-mingw)、Linux の場合は GCC/Clang)。
 
-Then build and run Ollama from the root directory of the repository:
+リポジトリのルートディレクトリから Ollama をビルドして実行します。
 
 ```shell
 go run . serve
@@ -13,22 +13,22 @@ go run . serve
 
 ## macOS (Apple Silicon)
 
-macOS Apple Silicon supports Metal which is built-in to the Ollama binary. No additional steps are required.
+macOS Apple Siliconは、Ollamaバイナリに組み込まれているMetalをサポートしています。追加の手順は必要ありません。
 
 ## macOS (Intel)
 
-Install prerequisites:
+前提条件となるものをインストールします:
 
-- [CMake](https://cmake.org/download/) or `brew install cmake`
+- [CMake](https://cmake.org/download/) または `brew install cmake`
 
-Then, configure and build the project:
+次に、プロジェクトを設定してビルドします:
 
 ```shell
 cmake -B build
 cmake --build build
 ```
 
-Lastly, run Ollama:
+最後に、Ollama を実行します。
 
 ```shell
 go run . serve
@@ -36,17 +36,17 @@ go run . serve
 
 ## Windows
 
-Install prerequisites:
+インストールの前提条件:
 
 - [CMake](https://cmake.org/download/)
-- [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) including the Native Desktop Workload
-- (Optional) AMD GPU support
+- [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) (ネイティブ デスクトップ ワークロードを含む)
+- (オプション) AMD GPU サポート
     - [ROCm](https://rocm.docs.amd.com/en/latest/)
     - [Ninja](https://github.com/ninja-build/ninja/releases)
-- (Optional) NVIDIA GPU support
+- (オプション) NVIDIA GPU サポート
     - [CUDA SDK](https://developer.nvidia.com/cuda-downloads?target_os=Windows&target_arch=x86_64&target_version=11&target_type=exe_network)
 
-Then, configure and build the project:
+次に、プロジェクトを設定してビルドします。
 
 ```shell
 cmake -B build
@@ -54,14 +54,14 @@ cmake --build build --config Release
 ```
 
 > [!IMPORTANT]
-> Building for ROCm requires additional flags:
+> ROCm のビルドには追加のフラグが必要です:
 > ```
 > cmake -B build -G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 > cmake --build build --config Release
 > ```
 
 
-Lastly, run Ollama:
+最後に、Ollama を実行します。
 
 ```shell
 go run . serve
@@ -69,30 +69,30 @@ go run . serve
 
 ## Windows (ARM)
 
-Windows ARM does not support additional acceleration libraries at this time.  Do not use cmake, simply `go run` or `go build`.
+Windows ARMは現時点では追加のアクセラレーションライブラリをサポートしていません。cmakeは使用せず、`go run`または`go build`を使用してください。
 
 ## Linux
 
-Install prerequisites:
+インストールの前提条件:
 
-- [CMake](https://cmake.org/download/) or `sudo apt install cmake` or `sudo dnf install cmake`
-- (Optional) AMD GPU support
+- [CMake](https://cmake.org/download/) または `sudo apt install cmake` または `sudo dnf install cmake`
+- (オプション) AMD GPU サポート
     - [ROCm](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/quick-start.html)
-- (Optional) NVIDIA GPU support
+- (オプション) NVIDIA GPU サポート
     - [CUDA SDK](https://developer.nvidia.com/cuda-downloads)
 
 > [!IMPORTANT]
-> Ensure prerequisites are in `PATH` before running CMake.
+> CMake を実行する前に、前提条件となるパッケージが `PATH` に含まれていることを確認してください。
 
 
-Then, configure and build the project:
+次に、プロジェクトを設定してビルドします:
 
 ```shell
 cmake -B build
 cmake --build build
 ```
 
-Lastly, run Ollama:
+最後に、Ollama を実行します:
 
 ```shell
 go run . serve
@@ -112,7 +112,7 @@ docker build --build-arg FLAVOR=rocm .
 
 ## Running tests
 
-To run tests, use `go test`:
+テストを実行するには、`go test` を使用します:
 
 ```shell
 go test ./...
@@ -147,13 +147,13 @@ go test ./...
 >
 > The synctest package is not required for production builds.
 
-## Library detection
+## ライブラリ検出
 
-Ollama looks for acceleration libraries in the following paths relative to the `ollama` executable:
+Ollamaは、`ollama`実行ファイルからの相対パスで以下のアクセラレーションライブラリを検索します。
 
 * `./lib/ollama` (Windows)
 * `../lib/ollama` (Linux)
 * `.` (macOS)
-* `build/lib/ollama` (for development)
+* `build/lib/ollama` (開発用)
 
-If the libraries are not found, Ollama will not run with any acceleration libraries.
+ライブラリが見つからない場合、Ollamaはアクセラレーションライブラリなしで実行されません。

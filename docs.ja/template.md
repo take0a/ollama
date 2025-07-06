@@ -1,16 +1,16 @@
 # Template
 
-Ollama provides a powerful templating engine backed by Go's built-in templating engine to construct prompts for your large language model. This feature is a valuable tool to get the most out of your models.
+Ollamaは、Goの組み込みテンプレートエンジンを基盤とした強力なテンプレートエンジンを提供し、大規模な言語モデル用のプロンプトを構築します。この機能は、モデルを最大限に活用するための貴重なツールです。
 
-## Basic Template Structure
+## 基本的なテンプレート構造
 
-A basic Go template consists of three main parts:
+基本的な Go テンプレートは、主に 3 つの部分で構成されます。
 
-* **Layout**: The overall structure of the template.
-* **Variables**: Placeholders for dynamic data that will be replaced with actual values when the template is rendered.
-* **Functions**: Custom functions or logic that can be used to manipulate the template's content.
+* **レイアウト**: テンプレートの全体的な構造。
+* **変数**: テンプレートがレンダリングされる際に実際の値に置き換えられる動的なデータのためのプレースホルダ。
+* **関数**: テンプレートのコンテンツを操作するために使用できるカスタム関数またはロジック。
 
-Here's an example of a simple chat template:
+以下に、シンプルなチャットテンプレートの例を示します。
 
 ```go
 {{- range .Messages }}
@@ -18,19 +18,19 @@ Here's an example of a simple chat template:
 {{- end }}
 ```
 
-In this example, we have:
+この例では、次の要素が含まれています。
 
-* A basic messages structure (layout)
-* Three variables: `Messages`, `Role`, and `Content` (variables)
-* A custom function (action) that iterates over an array of items (`range .Messages`) and displays each item
+* 基本的なメッセージ構造（レイアウト）
+* 3 つの変数：「Messages」、「Role」、「Content」（変数）
+* アイテムの配列（「range.Messages」）を反復処理して各アイテムを表示するカスタム関数（アクション）
 
-## Adding templates to your model
+## モデルへのテンプレートの追加
 
-By default, models imported into Ollama have a default template of `{{ .Prompt }}`, i.e. user inputs are sent verbatim to the LLM. This is appropriate for text or code completion models but lacks essential markers for chat or instruction models.
+デフォルトでは、Ollamaにインポートされたモデルは`{{ .Prompt }}`というデフォルトテンプレートを使用します。つまり、ユーザー入力はそのままLLMに送信されます。これはテキスト補完やコード補完モデルには適していますが、チャットやインストラクションモデルには不可欠なマーカーが欠けています。
 
-Omitting a template in these models puts the responsibility of correctly templating input onto the user. Adding a template allows users to easily get the best results from the model.
+これらのモデルでテンプレートを省略すると、入力を正しくテンプレート化する責任がユーザーに課せられます。テンプレートを追加することで、ユーザーはモデルから最適な結果を簡単に得ることができます。
 
-To add templates in your model, you'll need to add a `TEMPLATE` command to the Modelfile. Here's an example using Meta's Llama 3.
+モデルにテンプレートを追加するには、モデルファイルに`TEMPLATE`コマンドを追加する必要があります。MetaのLlama 3を使用した例を以下に示します。
 
 ```dockerfile
 FROM llama3.2
@@ -47,61 +47,61 @@ TEMPLATE """{{- if .System }}<|start_header_id|>system<|end_header_id|>
 """
 ```
 
-## Variables
+## 変数
 
-`System` (string): system prompt
+`System` (文字列): システムプロンプト
 
-`Prompt` (string): user prompt
+`Prompt` (文字列): ユーザープロンプト
 
-`Response` (string): assistant response
+`Response` (文字列): アシスタントの応答
 
-`Suffix` (string): text inserted after the assistant's response
+`Suffix` (文字列): アシスタントの応答の後に挿入されるテキスト
 
-`Messages` (list): list of messages
+`Messages` (リスト): メッセージのリスト
 
-`Messages[].Role` (string): role which can be one of `system`, `user`, `assistant`, or `tool`
+`Messages[].Role` (文字列): 役割。`system`、`user`、`assistant`、`tool` のいずれか
 
-`Messages[].Content` (string):  message content
+`Messages[].Content` (文字列): メッセージの内容
 
-`Messages[].ToolCalls` (list): list of tools the model wants to call
+`Messages[].ToolCalls` (リスト): モデルが呼び出すツールのリスト
 
-`Messages[].ToolCalls[].Function` (object): function to call
+`Messages[].ToolCalls[].Function` (オブジェクト): 呼び出す関数
 
-`Messages[].ToolCalls[].Function.Name` (string): function name
+`Messages[].ToolCalls[].Function.Name` (文字列): 関数名
 
-`Messages[].ToolCalls[].Function.Arguments` (map): mapping of argument name to argument value
+`Messages[].ToolCalls[].Function.Arguments` (マップ): 引数名と引数値のマッピング
 
-`Tools` (list): list of tools the model can access
+`Tools` (リスト): モデルが使用できるツールのリストアクセス
 
-`Tools[].Type` (string): schema type. `type` is always `function`
+`Tools[].Type` (文字列): スキーマタイプ。`type` は常に `function` です。
 
-`Tools[].Function` (object): function definition
+`Tools[].Function` (オブジェクト): 関数定義
 
-`Tools[].Function.Name` (string): function name
+`Tools[].Function.Name` (文字列): 関数名
 
-`Tools[].Function.Description` (string): function description
+`Tools[].Function.Description` (文字列): 関数の説明
 
-`Tools[].Function.Parameters` (object): function parameters
+`Tools[].Function.Parameters` (オブジェクト): 関数のパラメータ
 
-`Tools[].Function.Parameters.Type` (string): schema type. `type` is always `object`
+`Tools[].Function.Parameters.Type` (文字列): スキーマタイプ。 `type` は常に `object` です
 
-`Tools[].Function.Parameters.Required` (list): list of required properties
+`Tools[].Function.Parameters.Required` (リスト): 必須プロパティのリスト
 
-`Tools[].Function.Parameters.Properties` (map): mapping of property name to property definition
+`Tools[].Function.Parameters.Properties` (マップ): プロパティ名とプロパティ定義のマッピング
 
-`Tools[].Function.Parameters.Properties[].Type` (string): property type
+`Tools[].Function.Parameters.Properties[].Type` (文字列): プロパティの型
 
-`Tools[].Function.Parameters.Properties[].Description` (string): property description
+`Tools[].Function.Parameters.Properties[].Description` (文字列): プロパティの説明
 
-`Tools[].Function.Parameters.Properties[].Enum` (list): list of valid values
+`Tools[].Function.Parameters.Properties[].Enum` (リスト): 有効な値のリスト
 
-## Tips and Best Practices
+## ヒントとベストプラクティス
 
-Keep the following tips and best practices in mind when working with Go templates:
+Go テンプレートを使用する際は、以下のヒントとベストプラクティスに留意してください。
 
-* **Be mindful of dot**: Control flow structures like `range` and `with` changes the value `.`
-* **Out-of-scope variables**: Use `$.` to reference variables not currently in scope, starting from the root
-* **Whitespace control**: Use `-` to trim leading (`{{-`) and trailing (`-}}`) whitespace
+* **ドットに注意してください**: `range` や `with` などの制御フロー構造は、`.` の値を変更します。
+* **スコープ外の変数**: ルートから始めて、現在スコープ外の変数を参照するには、`$.` を使用します。
+* **空白の制御**: 先頭の空白 (`{{-`) と末尾の空白 (`-}}`) を削除するには、`-` を使用します。
 
 ## Examples
 
@@ -109,7 +109,7 @@ Keep the following tips and best practices in mind when working with Go template
 
 #### ChatML
 
-ChatML is a popular template format. It can be used for models such as Databrick's DBRX, Intel's Neural Chat, and Microsoft's Orca 2.
+ChatMLは人気のテンプレート形式です。DatabrickのDBRX、IntelのNeural Chat、MicrosoftのOrca 2などのモデルに使用できます。
 
 ```go
 {{- range .Messages }}<|im_start|>{{ .Role }}
@@ -119,11 +119,11 @@ ChatML is a popular template format. It can be used for models such as Databrick
 
 ### Example Tools
 
-Tools support can be added to a model by adding a `{{ .Tools }}` node to the template. This feature is useful for models trained to call external tools and can a powerful tool for retrieving real-time data or performing complex tasks.
+テンプレートに `{{ .Tools }}` ノードを追加することで、モデルにツールサポートを追加できます。この機能は、外部ツールを呼び出すようにトレーニングされたモデルに役立ち、リアルタイムデータの取得や複雑なタスクの実行に役立つ強力なツールとなります。
 
 #### Mistral
 
-Mistral v0.3 and Mixtral 8x22B supports tool calling.
+Mistral v0.3 および Mixtral 8x22B はツールの呼び出しをサポートしています。
 
 ```go
 {{- range $index, $_ := .Messages }}
@@ -143,24 +143,24 @@ Mistral v0.3 and Mixtral 8x22B supports tool calling.
 {{- end }}
 ```
 
-### Example Fill-in-Middle
+### 中間補完の例
 
-Fill-in-middle support can be added to a model by adding a `{{ .Suffix }}` node to the template. This feature is useful for models that are trained to generate text in the middle of user input, such as code completion models.
+テンプレートに `{{ .Suffix }}` ノードを追加することで、モデルに中間補完のサポートを追加できます。この機能は、コード補完モデルなど、ユーザー入力の途中でテキストを生成するようにトレーニングされたモデルに役立ちます。
 
 #### CodeLlama
 
-CodeLlama [7B](https://ollama.com/library/codellama:7b-code) and [13B](https://ollama.com/library/codellama:13b-code) code completion models support fill-in-middle.
+CodeLlama [7B](https://ollama.com/library/codellama:7b-code) と [13B](https://ollama.com/library/codellama:13b-code) コード補完モデルは中間補完をサポートしています。
 
 ```go
 <PRE> {{ .Prompt }} <SUF>{{ .Suffix }} <MID>
 ```
 
 > [!NOTE]
-> CodeLlama 34B and 70B code completion and all instruct and Python fine-tuned models do not support fill-in-middle.
+> CodeLlama 34B および 70B コード補完、およびすべての命令と Python の微調整モデルは、中間補完をサポートしていません。
 
 #### Codestral
 
-Codestral [22B](https://ollama.com/library/codestral:22b) supports fill-in-middle.
+Codestral [22B](https://ollama.com/library/codestral:22b)は、中間補完をサポートしています。
 
 ```go
 [SUFFIX]{{ .Suffix }}[PREFIX] {{ .Prompt }}

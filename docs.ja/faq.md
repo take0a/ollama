@@ -1,40 +1,40 @@
 # FAQ
 
-## How can I upgrade Ollama?
+## Ollamaをアップグレードするにはどうすればよいですか？
 
-Ollama on macOS and Windows will automatically download updates. Click on the taskbar or menubar item and then click "Restart to update" to apply the update. Updates can also be installed by downloading the latest version [manually](https://ollama.com/download/).
+macOSとWindows版のOllamaは、自動的にアップデートをダウンロードします。タスクバーまたはメニューバーの項目をクリックし、「再起動してアップデート」をクリックしてアップデートを適用してください。最新バージョンを[手動で](https://ollama.com/download/)ダウンロードしてアップデートをインストールすることもできます。
 
-On Linux, re-run the install script:
+Linux では、インストール スクリプトを再実行します:
 
 ```shell
 curl -fsSL https://ollama.com/install.sh | sh
 ```
 
-## How can I view the logs?
+## ログはどのように確認できますか？
 
-Review the [Troubleshooting](./troubleshooting.md) docs for more about using logs.
+ログの使用方法の詳細については、[トラブルシューティング](./troubleshooting.md) ドキュメントをご覧ください。
 
-## Is my GPU compatible with Ollama?
+## 私のGPUはOllamaと互換性がありますか？
 
-Please refer to the [GPU docs](./gpu.md).
+[GPUドキュメント](./gpu.md)を参照してください。
 
-## How can I specify the context window size?
+## コンテキストウィンドウのサイズを指定するにはどうすればよいですか？
 
-By default, Ollama uses a context window size of 4096 tokens. 
+デフォルトでは、Ollama は 4096 トークンのコンテキストウィンドウサイズを使用します。
 
-This can be overridden with the `OLLAMA_CONTEXT_LENGTH` environment variable. For example, to set the default context window to 8K, use: 
+これは `OLLAMA_CONTEXT_LENGTH` 環境変数で上書きできます。例えば、デフォルトのコンテキストウィンドウを 8K に設定するには、次のようにします。
 
 ```shell
 OLLAMA_CONTEXT_LENGTH=8192 ollama serve
 ```
 
-To change this when using `ollama run`, use `/set parameter`:
+`ollama run` を使用するときにこれを変更するには、`/set parameter` を使用します:
 
 ```shell
 /set parameter num_ctx 4096
 ```
 
-When using the API, specify the `num_ctx` parameter:
+API を使用する場合は、`num_ctx` パラメータを指定します:
 
 ```shell
 curl http://localhost:11434/api/generate -d '{
@@ -46,9 +46,9 @@ curl http://localhost:11434/api/generate -d '{
 }'
 ```
 
-## How can I tell if my model was loaded onto the GPU?
+## モデルがGPUにロードされたかどうかを確認するにはどうすればよいですか？
 
-Use the `ollama ps` command to see what models are currently loaded into memory.
+現在メモリにロードされているモデルを確認するには、「ollama ps」コマンドを使用してください。
 
 ```shell
 ollama ps
@@ -61,79 +61,79 @@ ollama ps
 > llama3:70b	bcfb190ca3a7	42 GB	100% GPU 	4 minutes from now
 > ```
 
-The `Processor` column will show which memory the model was loaded in to:
-* `100% GPU` means the model was loaded entirely into the GPU
-* `100% CPU` means the model was loaded entirely in system memory
-* `48%/52% CPU/GPU` means the model was loaded partially onto both the GPU and into system memory
+`プロセッサ` 列には、モデルがどのメモリにロードされたかが表示されます。
+* `100% GPU` は、モデルが完全にGPUにロードされたことを意味します。
+* `100% CPU` は、モデルが完全にシステムメモリにロードされたことを意味します。
+* `48%/52% CPU/GPU` は、モデルがGPUとシステムメモリの両方に部分的にロードされたことを意味します。
 
-## How do I configure Ollama server?
+## Ollamaサーバーはどのように設定すればよいですか？
 
-Ollama server can be configured with environment variables.
+Ollamaサーバーは環境変数を使って設定できます。
 
-### Setting environment variables on Mac
+### Mac での環境変数の設定
 
-If Ollama is run as a macOS application, environment variables should be set using `launchctl`:
+Ollama を macOS アプリケーションとして実行する場合、環境変数は `launchctl` を使用して設定する必要があります。
 
-1. For each environment variable, call `launchctl setenv`.
+1. 各環境変数に対して `launchctl setenv` を呼び出します。
 
     ```bash
     launchctl setenv OLLAMA_HOST "0.0.0.0:11434"
     ```
 
-2. Restart Ollama application.
+2. Ollama アプリケーションを再起動します。
 
-### Setting environment variables on Linux
+### Linux での環境変数の設定
 
-If Ollama is run as a systemd service, environment variables should be set using `systemctl`:
+Ollama を systemd サービスとして実行する場合、環境変数は `systemctl` を使用して設定する必要があります。
 
-1. Edit the systemd service by calling `systemctl edit ollama.service`. This will open an editor.
+1. `systemctl edit ollama.service` を実行して、systemd サービスを編集します。エディタが開きます。
 
-2. For each environment variable, add a line `Environment` under section `[Service]`:
+2. 各環境変数について、`[Service]` セクションに `Environment` 行を追加します。
 
     ```ini
     [Service]
     Environment="OLLAMA_HOST=0.0.0.0:11434"
     ```
 
-3. Save and exit.
+3. 保存して終了します。
 
-4. Reload `systemd` and restart Ollama:
+4. `systemd` をリロードし、Ollama を再起動します。
 
    ```shell
    systemctl daemon-reload
    systemctl restart ollama
    ```
 
-### Setting environment variables on Windows
+### Windows での環境変数の設定
 
-On Windows, Ollama inherits your user and system environment variables.
+Windows では、Ollama はユーザー環境変数とシステム環境変数を継承します。
 
-1. First Quit Ollama by clicking on it in the task bar.
+1. まず、タスクバーの Ollama をクリックして終了します。
 
-2. Start the Settings (Windows 11) or Control Panel (Windows 10) application and search for _environment variables_.
+2. 設定 (Windows 11) またはコントロールパネル (Windows 10) アプリケーションを起動し、「環境変数」を検索します。
 
-3. Click on _Edit environment variables for your account_.
+3. 「アカウントの環境変数を編集」をクリックします。
 
-4. Edit or create a new variable for your user account for `OLLAMA_HOST`, `OLLAMA_MODELS`, etc.
+4. `OLLAMA_HOST`、`OLLAMA_MODELS` などのユーザーアカウントの環境変数を編集または新規作成します。
 
-5. Click OK/Apply to save.
+5. 「OK/適用」をクリックして保存します。
 
-6. Start the Ollama application from the Windows Start menu.
+6. Windows のスタートメニューから Ollama アプリケーションを起動します。
 
-## How do I use Ollama behind a proxy?
+## Ollamaをプロキシ経由で使用するにはどうすればよいですか？
 
-Ollama pulls models from the Internet and may require a proxy server to access the models. Use `HTTPS_PROXY` to redirect outbound requests through the proxy. Ensure the proxy certificate is installed as a system certificate. Refer to the section above for how to use environment variables on your platform.
+Ollamaはインターネットからモデルを取得するため、モデルへのアクセスにはプロキシサーバーが必要になる場合があります。送信リクエストをプロキシ経由でリダイレクトするには、`HTTPS_PROXY`を使用してください。プロキシ証明書がシステム証明書としてインストールされていることを確認してください。プラットフォームでの環境変数の使用方法については、上記のセクションを参照してください。
 
 > [!NOTE]
-> Avoid setting `HTTP_PROXY`. Ollama does not use HTTP for model pulls, only HTTPS. Setting `HTTP_PROXY` may interrupt client connections to the server.
+> `HTTP_PROXY`の設定は避けてください。Ollamaはモデルの取得にHTTPを使用せず、HTTPSのみを使用します。`HTTP_PROXY`を設定すると、サーバーへのクライアント接続が中断される可能性があります。
 
-### How do I use Ollama behind a proxy in Docker?
+### Docker でプロキシの背後にある Ollama を使用するにはどうすればよいですか？
 
-The Ollama Docker container image can be configured to use a proxy by passing `-e HTTPS_PROXY=https://proxy.example.com` when starting the container.
+Ollama Docker コンテナイメージは、コンテナの起動時に `-e HTTPS_PROXY=https://proxy.example.com` を渡すことで、プロキシを使用するように設定できます。
 
-Alternatively, the Docker daemon can be configured to use a proxy. Instructions are available for Docker Desktop on [macOS](https://docs.docker.com/desktop/settings/mac/#proxies), [Windows](https://docs.docker.com/desktop/settings/windows/#proxies), and [Linux](https://docs.docker.com/desktop/settings/linux/#proxies), and Docker [daemon with systemd](https://docs.docker.com/config/daemon/systemd/#httphttps-proxy).
+あるいは、Docker デーモンをプロキシを使用するように設定することもできます。手順は、[macOS](https://docs.docker.com/desktop/settings/mac/#proxies)、[Windows](https://docs.docker.com/desktop/settings/windows/#proxies)、[Linux](https://docs.docker.com/desktop/settings/linux/#proxies) 上の Docker Desktop、および systemd を使用した Docker [daemon](https://docs.docker.com/config/daemon/systemd/#httphttps-proxy) で提供されています。
 
-Ensure the certificate is installed as a system certificate when using HTTPS. This may require a new Docker image when using a self-signed certificate.
+HTTPS を使用する場合は、証明書がシステム証明書としてインストールされていることを確認してください。自己署名証明書を使用する場合は、新しい Docker イメージが必要になる場合があります。
 
 ```dockerfile
 FROM ollama/ollama
@@ -141,26 +141,26 @@ COPY my-ca.pem /usr/local/share/ca-certificates/my-ca.crt
 RUN update-ca-certificates
 ```
 
-Build and run this image:
+このイメージをビルドして実行します:
 
 ```shell
 docker build -t ollama-with-ca .
 docker run -d -e HTTPS_PROXY=https://my.proxy.example.com -p 11434:11434 ollama-with-ca
 ```
 
-## Does Ollama send my prompts and answers back to ollama.com?
+## Ollamaは私のプロンプトと回答をollama.comに送信しますか？
 
-No. Ollama runs locally, and conversation data does not leave your machine.
+いいえ。Ollamaはローカルで実行され、会話データはユーザーのマシンから外部に送信されることはありません。
 
-## How can I expose Ollama on my network?
+## Ollama をネットワークに公開するにはどうすればよいですか？
 
-Ollama binds 127.0.0.1 port 11434 by default. Change the bind address with the `OLLAMA_HOST` environment variable.
+Ollama はデフォルトで 127.0.0.1 のポート 11434 にバインドします。`OLLAMA_HOST` 環境変数でバインドアドレスを変更してください。
 
-Refer to the section [above](#how-do-i-configure-ollama-server) for how to set environment variables on your platform.
+お使いのプラットフォームでの環境変数の設定方法については、[上記](#how-do-i-configure-ollama-server) のセクションを参照してください。
 
-## How can I use Ollama with a proxy server?
+## Ollamaをプロキシサーバーで使用するにはどうすればよいですか？
 
-Ollama runs an HTTP server and can be exposed using a proxy server such as Nginx. To do so, configure the proxy to forward requests and optionally set required headers (if not exposing Ollama on the network). For example, with Nginx:
+OllamaはHTTPサーバーで動作し、Nginxなどのプロキシサーバーを介して公開できます。そのためには、リクエストを転送するようにプロキシを設定し、必要に応じて必要なヘッダーを設定します（Ollamaをネットワーク上に公開しない場合）。例えば、Nginxの場合は以下のようになります。
 
 ```nginx
 server {
@@ -173,163 +173,162 @@ server {
 }
 ```
 
-## How can I use Ollama with ngrok?
+## Ollamaをngrokで使用するにはどうすればよいですか？
 
-Ollama can be accessed using a range of tools for tunneling tools. For example with Ngrok:
+Ollamaは、トンネリングツール用の様々なツールからアクセスできます。例えば、ngrokでは以下のようになります。
 
 ```shell
 ngrok http 11434 --host-header="localhost:11434"
 ```
 
-## How can I use Ollama with Cloudflare Tunnel?
+## Ollama を Cloudflare Tunnel と併用するにはどうすればよいですか？
 
-To use Ollama with Cloudflare Tunnel, use the `--url` and `--http-host-header` flags:
+Ollama を Cloudflare Tunnel と併用するには、`--url` フラグと `--http-host-header` フラグを使用します。
 
 ```shell
 cloudflared tunnel --url http://localhost:11434 --http-host-header="localhost:11434"
 ```
 
-## How can I allow additional web origins to access Ollama?
+## Ollama へのアクセスを他のウェブオリジンに許可するにはどうすればよいですか？
 
-Ollama allows cross-origin requests from `127.0.0.1` and `0.0.0.0` by default. Additional origins can be configured with `OLLAMA_ORIGINS`.
+Ollama はデフォルトで `127.0.0.1` と `0.0.0.0` からのクロスオリジンリクエストを許可します。追加のオリジンは `OLLAMA_ORIGINS` で設定できます。
 
-For browser extensions, you'll need to explicitly allow the extension's origin pattern. Set `OLLAMA_ORIGINS` to include `chrome-extension://*`, `moz-extension://*`, and `safari-web-extension://*` if you wish to allow all browser extensions access, or specific extensions as needed:
+ブラウザ拡張機能の場合は、拡張機能のオリジンパターンを明示的に許可する必要があります。すべてのブラウザ拡張機能、または必要に応じて特定の拡張機能へのアクセスを許可する場合は、`OLLAMA_ORIGINS` に `chrome-extension://*`、`moz-extension://*`、`safari-web-extension://*` を含めてください。
 
 ```
 # Allow all Chrome, Firefox, and Safari extensions
 OLLAMA_ORIGINS=chrome-extension://*,moz-extension://*,safari-web-extension://* ollama serve
 ```
 
-Refer to the section [above](#how-do-i-configure-ollama-server) for how to set environment variables on your platform.
+プラットフォームで環境変数を設定する方法については、[上記](#how-do-i-configure-ollama-server)のセクションを参照してください。
 
-## Where are models stored?
+## モデルはどこに保存されますか?
 
 - macOS: `~/.ollama/models`
 - Linux: `/usr/share/ollama/.ollama/models`
 - Windows: `C:\Users\%username%\.ollama\models`
 
-### How do I set them to a different location?
+### 別の場所に設定するにはどうすればよいですか？
 
-If a different directory needs to be used, set the environment variable `OLLAMA_MODELS` to the chosen directory.
+別のディレクトリを使用する必要がある場合は、環境変数 `OLLAMA_MODELS` を選択したディレクトリに設定してください。
 
-> Note: on Linux using the standard installer, the `ollama` user needs read and write access to the specified directory. To assign the directory to the `ollama` user run `sudo chown -R ollama:ollama <directory>`.
+> 注: Linux で標準インストーラを使用する場合、`ollama` ユーザーに指定されたディレクトリへの読み取りおよび書き込み権限が必要です。`ollama` ユーザーにディレクトリを割り当てるには、`sudo chown -R ollama:ollama <directory>` を実行してください。
 
-Refer to the section [above](#how-do-i-configure-ollama-server) for how to set environment variables on your platform.
+お使いのプラットフォームでの環境変数の設定方法については、[上記](#how-do-i-configure-ollama-server) のセクションを参照してください。
 
-## How can I use Ollama in Visual Studio Code?
+## Visual Studio Code で Ollama を使用するにはどうすればよいですか？
 
-There is already a large collection of plugins available for VSCode as well as other editors that leverage Ollama. See the list of [extensions & plugins](https://github.com/ollama/ollama#extensions--plugins) at the bottom of the main repository readme.
+VSCode や Ollama を活用した他のエディター向けに、既に多数のプラグインが利用可能です。メインリポジトリの Readme の下部にある [拡張機能とプラグイン](https://github.com/ollama/ollama#extensions--plugins) のリストをご覧ください。
 
-## How do I use Ollama with GPU acceleration in Docker?
+## DockerでGPUアクセラレーションを使用してOllamaを使用するにはどうすればよいですか？
 
-The Ollama Docker container can be configured with GPU acceleration in Linux or Windows (with WSL2). This requires the [nvidia-container-toolkit](https://github.com/NVIDIA/nvidia-container-toolkit). See [ollama/ollama](https://hub.docker.com/r/ollama/ollama) for more details.
+Ollama Dockerコンテナは、LinuxまたはWindows（WSL2使用）でGPUアクセラレーションを設定できます。これには[nvidia-container-toolkit](https://github.com/NVIDIA/nvidia-container-toolkit)が必要です。詳細は[ollama/ollama](https://hub.docker.com/r/ollama/ollama)をご覧ください。
 
-GPU acceleration is not available for Docker Desktop in macOS due to the lack of GPU passthrough and emulation.
+GPUパススルーとエミュレーションがないため、macOSのDocker DesktopではGPUアクセラレーションは利用できません。
 
-## Why is networking slow in WSL2 on Windows 10?
+## Windows 10 の WSL2 でネットワークが遅いのはなぜですか？
 
-This can impact both installing Ollama, as well as downloading models.
+これは、Ollama のインストールとモデルのダウンロードの両方に影響する可能性があります。
 
-Open `Control Panel > Networking and Internet > View network status and tasks` and click on `Change adapter settings` on the left panel. Find the `vEthernel (WSL)` adapter, right click and select `Properties`.
-Click on `Configure` and open the `Advanced` tab. Search through each of the properties until you find `Large Send Offload Version 2 (IPv4)` and `Large Send Offload Version 2 (IPv6)`. *Disable* both of these
-properties.
+「コントロール パネル > ネットワークとインターネット > ネットワークの状態とタスクの表示」を開き、左側のパネルで「アダプターの設定の変更」をクリックします。「vEthernel (WSL)」アダプターを見つけて右クリックし、「プロパティ」を選択します。
+「構成」をクリックし、「詳細設定」タブを開きます。「Large Send Offload Version 2 (IPv4)」と「Large Send Offload Version 2 (IPv6)」が見つかるまで、それぞれのプロパティを検索します。これらのプロパティは両方とも*無効*にしてください。
 
-## How can I preload a model into Ollama to get faster response times?
+## Ollamaにモデルをプリロードして応答時間を短縮するにはどうすればよいですか？
 
-If you are using the API you can preload a model by sending the Ollama server an empty request. This works with both the `/api/generate` and `/api/chat` API endpoints.
+APIを使用している場合は、Ollamaサーバーに空のリクエストを送信することでモデルをプリロードできます。これは、`/api/generate`と`/api/chat`の両方のAPIエンドポイントで機能します。
 
-To preload the mistral model using the generate endpoint, use:
+generateエンドポイントを使用してMistralモデルをプリロードするには、次のコマンドを使用します。
 
 ```shell
 curl http://localhost:11434/api/generate -d '{"model": "mistral"}'
 ```
 
-To use the chat completions endpoint, use:
+チャット完了エンドポイントを使用するには、以下を使用します:
 
 ```shell
 curl http://localhost:11434/api/chat -d '{"model": "mistral"}'
 ```
 
-To preload a model using the CLI, use the command:
+CLI を使用してモデルをプリロードするには、次のコマンドを使用します:
 
 ```shell
 ollama run llama3.2 ""
 ```
 
-## How do I keep a model loaded in memory or make it unload immediately?
+## モデルをメモリにロードしたままにしたり、すぐにアンロードしたりするにはどうすればよいですか？
 
-By default models are kept in memory for 5 minutes before being unloaded. This allows for quicker response times if you're making numerous requests to the LLM. If you want to immediately unload a model from memory, use the `ollama stop` command:
+デフォルトでは、モデルはアンロードされるまで5分間メモリに保持されます。これにより、LLMに多数のリクエストを送信する場合の応答時間が短縮されます。モデルをメモリからすぐにアンロードしたい場合は、`ollama stop` コマンドを使用します。
 
 ```shell
 ollama stop llama3.2
 ```
 
-If you're using the API, use the `keep_alive` parameter with the `/api/generate` and `/api/chat` endpoints to set the amount of time that a model stays in memory. The `keep_alive` parameter can be set to:
-* a duration string (such as "10m" or "24h")
-* a number in seconds (such as 3600)
-* any negative number which will keep the model loaded in memory (e.g. -1 or "-1m")
-* '0' which will unload the model immediately after generating a response
+API を使用している場合は、`/api/generate` エンドポイントと `/api/chat` エンドポイントで `keep_alive` パラメータを使用して、モデルがメモリ内に保持される時間を設定します。`keep_alive` パラメータには、以下の値を設定できます。
+* 期間を表す文字列（例: "10m" または "24h"）
+* 秒数（例: 3600）
+* 負の数（例: モデルをメモリ内にロードしたままにする）（例: -1 または "-1m"）
+* '0'（レスポンス生成後すぐにモデルをアンロードする）
 
-For example, to preload a model and leave it in memory use:
+例えば、モデルをプリロードしてメモリ内に残すには、以下のコマンドを使用します。
 
 ```shell
 curl http://localhost:11434/api/generate -d '{"model": "llama3.2", "keep_alive": -1}'
 ```
 
-To unload the model and free up memory use:
+モデルをアンロードしてメモリを解放するには、次を使用します:
 
 ```shell
 curl http://localhost:11434/api/generate -d '{"model": "llama3.2", "keep_alive": 0}'
 ```
 
-Alternatively, you can change the amount of time all models are loaded into memory by setting the `OLLAMA_KEEP_ALIVE` environment variable when starting the Ollama server. The `OLLAMA_KEEP_ALIVE` variable uses the same parameter types as the `keep_alive` parameter types mentioned above. Refer to the section explaining [how to configure the Ollama server](#how-do-i-configure-ollama-server) to correctly set the environment variable.
+あるいは、Ollamaサーバーの起動時に`OLLAMA_KEEP_ALIVE`環境変数を設定することで、すべてのモデルがメモリにロードされる時間を変更することもできます。`OLLAMA_KEEP_ALIVE`変数は、前述の`keep_alive`パラメータと同じパラメータ型を使用します。環境変数を正しく設定するには、[Ollamaサーバーの設定方法](#how-do-i-configure-ollama-server)のセクションを参照してください。
 
-The `keep_alive` API parameter with the `/api/generate` and `/api/chat` API endpoints will override the `OLLAMA_KEEP_ALIVE` setting.
+`/api/generate` および `/api/chat` API エンドポイントの `keep_alive` API パラメータは、`OLLAMA_KEEP_ALIVE` 設定を上書きします。
 
-## How do I manage the maximum number of requests the Ollama server can queue?
+## Ollamaサーバーがキューイングできるリクエストの最大数を管理するにはどうすればよいですか？
 
-If too many requests are sent to the server, it will respond with a 503 error indicating the server is overloaded.  You can adjust how many requests may be queue by setting `OLLAMA_MAX_QUEUE`.
+サーバーにリクエストが多すぎると、サーバーが過負荷であることを示す503エラーが返されます。`OLLAMA_MAX_QUEUE`を設定することで、キューイングできるリクエスト数を調整できます。
 
-## How does Ollama handle concurrent requests?
+## Ollama は同時リクエストをどのように処理しますか？
 
-Ollama supports two levels of concurrent processing.  If your system has sufficient available memory (system memory when using CPU inference, or VRAM for GPU inference) then multiple models can be loaded at the same time.  For a given model, if there is sufficient available memory when the model is loaded, it is configured to allow parallel request processing.
+Ollama は2つのレベルの同時処理をサポートしています。システムに十分な空きメモリ（CPU 推論を使用する場合はシステムメモリ、GPU 推論を使用する場合は VRAM）がある場合、複数のモデルを同時にロードできます。特定のモデルでは、モデルのロード時に十分な空きメモリがある場合、並列リクエスト処理が許可されるように構成されます。
 
-If there is insufficient available memory to load a new model request while one or more models are already loaded, all new requests will be queued until the new model can be loaded.  As prior models become idle, one or more will be unloaded to make room for the new model.  Queued requests will be processed in order.  When using GPU inference new models must be able to completely fit in VRAM to allow concurrent model loads.
+1 つ以上のモデルが既にロードされている状態で、新しいモデルリクエストをロードするための空きメモリが不足している場合、すべての新しいリクエストは新しいモデルがロードされるまでキューに入れられます。以前のモデルがアイドル状態になると、新しいモデルのためのスペースを確保するために、1 つ以上のモデルがアンロードされます。キューに入れられたリクエストは順番に処理されます。GPU 推論を使用する場合、同時モデルのロードを可能にするには、新しいモデルが VRAM に完全に収まる必要があります。
 
-Parallel request processing for a given model results in increasing the context size by the number of parallel requests.  For example, a 2K context with 4 parallel requests will result in an 8K context and additional memory allocation.
+特定のモデルに対する並列リクエスト処理では、並列リクエストの数だけコンテキストサイズが増加します。たとえば、2KB のコンテキストで 4 つの並列リクエストを処理する場合、8KB のコンテキストと追加のメモリ割り当てが必要になります。
 
-The following server settings may be used to adjust how Ollama handles concurrent requests on most platforms:
+以下のサーバー設定は、ほとんどのプラットフォームにおいて、Ollamaが同時リクエストを処理する方法を調整するために使用できます。
 
-- `OLLAMA_MAX_LOADED_MODELS` - The maximum number of models that can be loaded concurrently provided they fit in available memory.  The default is 3 * the number of GPUs or 3 for CPU inference.
-- `OLLAMA_NUM_PARALLEL` - The maximum number of parallel requests each model will process at the same time.  The default will auto-select either 4 or 1 based on available memory.
-- `OLLAMA_MAX_QUEUE` - The maximum number of requests Ollama will queue when busy before rejecting additional requests. The default is 512
+- `OLLAMA_MAX_LOADED_MODELS` - 利用可能なメモリに収まる場合に、同時にロードできるモデルの最大数。デフォルトはGPU数の3倍、またはCPU推論の場合は3です。
+- `OLLAMA_NUM_PARALLEL` - 各モデルが同時に処理できる並列リクエストの最大数。デフォルトは、利用可能なメモリに基づいて4または1が自動的に選択されます。
+- `OLLAMA_MAX_QUEUE` - ビジー時にOllamaがキューに入れるリクエストの最大数。これを超えると、追加のリクエストは拒否されます。デフォルトは512です。
 
-Note: Windows with Radeon GPUs currently default to 1 model maximum due to limitations in ROCm v5.7 for available VRAM reporting.  Once ROCm v6.2 is available, Windows Radeon will follow the defaults above.  You may enable concurrent model loads on Radeon on Windows, but ensure you don't load more models than will fit into your GPUs VRAM.
+注：Radeon GPUを搭載したWindowsでは、ROCm v5.7の利用可能なVRAMレポートに関する制限により、現在デフォルトで最大1モデルに設定されています。ROCm v6.2が利用可能になると、Windows Radeonは上記のデフォルトに従います。 Windows 上の Radeon で同時モデル ロードを有効にすることができますが、GPU VRAM に収まる以上のモデルをロードしないようにしてください。
 
-## How does Ollama load models on multiple GPUs?
+## Ollamaはどのようにして複数のGPUにモデルをロードするのでしょうか？
 
-When loading a new model, Ollama evaluates the required VRAM for the model against what is currently available.  If the model will entirely fit on any single GPU, Ollama will load the model on that GPU.  This typically provides the best performance as it reduces the amount of data transferring across the PCI bus during inference.  If the model does not fit entirely on one GPU, then it will be spread across all the available GPUs.
+新しいモデルをロードする際、Ollamaはモデルに必要なVRAMと現在利用可能なVRAMを比較します。モデルが1つのGPUに完全に収まる場合、OllamaはそのGPUにモデルをロードします。これにより、推論中にPCIバスを介して転送されるデータ量が削減されるため、通常は最高のパフォーマンスが得られます。モデルが1つのGPUに完全に収まらない場合は、利用可能なすべてのGPUに分散してロードされます。
 
-## How can I enable Flash Attention?
+## Flash Attention を有効にするにはどうすればよいですか？
 
-Flash Attention is a feature of most modern models that can significantly reduce memory usage as the context size grows.  To enable Flash Attention, set the `OLLAMA_FLASH_ATTENTION` environment variable to `1` when starting the Ollama server.
+Flash Attention は、コンテキストサイズの増加に応じてメモリ使用量を大幅に削減できる、ほとんどの最新モデルに搭載されている機能です。Flash Attention を有効にするには、Ollama サーバーの起動時に `OLLAMA_FLASH_ATTENTION` 環境変数を `1` に設定してください。
 
-## How can I set the quantization type for the K/V cache?
+## K/Vキャッシュの量子化タイプを設定するにはどうすればよいですか？
 
-The K/V context cache can be quantized to significantly reduce memory usage when Flash Attention is enabled.
+Flash Attentionが有効になっている場合、K/Vコンテキストキャッシュを量子化することでメモリ使用量を大幅に削減できます。
 
-To use quantized K/V cache with Ollama you can set the following environment variable:
+Ollamaで量子化されたK/Vキャッシュを使用するには、以下の環境変数を設定します。
 
-- `OLLAMA_KV_CACHE_TYPE` - The quantization type for the K/V cache.  Default is `f16`.
+- `OLLAMA_KV_CACHE_TYPE` - K/Vキャッシュの量子化タイプ。デフォルトは`f16`です。
 
-> Note: Currently this is a global option - meaning all models will run with the specified quantization type.
+> 注：現在、これはグローバルオプションです。つまり、すべてのモデルが指定された量子化タイプで実行されます。
 
-The currently available K/V cache quantization types are:
+現在利用可能なK/Vキャッシュ量子化タイプは以下のとおりです。
 
-- `f16` - high precision and memory usage (default).
-- `q8_0` - 8-bit quantization, uses approximately 1/2 the memory of `f16` with a very small loss in precision, this usually has no noticeable impact on the model's quality (recommended if not using f16).
-- `q4_0` - 4-bit quantization, uses approximately 1/4 the memory of `f16` with a small-medium loss in precision that may be more noticeable at higher context sizes.
+- `f16` - 高精度かつメモリ使用量が多い（デフォルト）。
+- `q8_0` - 8ビット量子化。`f16`の約半分のメモリ使用量で、精度はわずかに低下しますが、通常はモデルの品質に目立った影響はありません（f16を使用しない場合に推奨）。
+- `q4_0` - 4ビット量子化。`f16`の約4分の1のメモリ使用量で、精度は小～中程度低下しますが、コンテキストサイズが大きい場合はより顕著になる可能性があります。
 
-How much the cache quantization impacts the model's response quality will depend on the model and the task.  Models that have a high GQA count (e.g. Qwen2) may see a larger impact on precision from quantization than models with a low GQA count.
+キャッシュ量子化がモデルの応答品質にどの程度影響するかは、モデルとタスクによって異なります。GQA数が多いモデル（例：Qwen2）は、GQA数が少ないモデルよりも量子化による精度への影響が大きい可能性があります。
 
-You may need to experiment with different quantization types to find the best balance between memory usage and quality.
+メモリ使用量と品質の最適なバランスを見つけるには、さまざまな量子化タイプを試してみる必要があるかもしれません。

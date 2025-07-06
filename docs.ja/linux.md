@@ -1,65 +1,65 @@
 # Linux
 
-## Install
+## インストール
 
-To install Ollama, run the following command:
+Ollama をインストールするには、次のコマンドを実行します:
 
 ```shell
 curl -fsSL https://ollama.com/install.sh | sh
 ```
 
-## Manual install
+## 手動インストール
 
 > [!NOTE]
-> If you are upgrading from a prior version, you should remove the old libraries with `sudo rm -rf /usr/lib/ollama` first.
+> 以前のバージョンからアップグレードする場合は、まず `sudo rm -rf /usr/lib/ollama` で古いライブラリを削除してください。
 
-Download and extract the package:
+パッケージをダウンロードして解凍します:
 
 ```shell
 curl -L https://ollama.com/download/ollama-linux-amd64.tgz -o ollama-linux-amd64.tgz
 sudo tar -C /usr -xzf ollama-linux-amd64.tgz
 ```
 
-Start Ollama:
+Ollamaを起動します:
 
 ```shell
 ollama serve
 ```
 
-In another terminal, verify that Ollama is running:
+別のターミナルで、Ollama が実行されていることを確認します:
 
 ```shell
 ollama -v
 ```
 
-### AMD GPU install
+### AMD GPU のインストール
 
-If you have an AMD GPU, also download and extract the additional ROCm package:
+AMD GPU をお持ちの場合は、追加の ROCm パッケージもダウンロードして解凍してください。
 
 ```shell
 curl -L https://ollama.com/download/ollama-linux-amd64-rocm.tgz -o ollama-linux-amd64-rocm.tgz
 sudo tar -C /usr -xzf ollama-linux-amd64-rocm.tgz
 ```
 
-### ARM64 install
+### ARM64 インストール
 
-Download and extract the ARM64-specific package:
+ARM64 専用パッケージをダウンロードして解凍します。
 
 ```shell
 curl -L https://ollama.com/download/ollama-linux-arm64.tgz -o ollama-linux-arm64.tgz
 sudo tar -C /usr -xzf ollama-linux-arm64.tgz
 ```
 
-### Adding Ollama as a startup service (recommended)
+### Ollama をスタートアップサービスとして追加する（推奨）
 
-Create a user and group for Ollama:
+Ollama のユーザーとグループを作成します:
 
 ```shell
 sudo useradd -r -s /bin/false -U -m -d /usr/share/ollama ollama
 sudo usermod -a -G ollama $(whoami)
 ```
 
-Create a service file in `/etc/systemd/system/ollama.service`:
+`/etc/systemd/system/ollama.service` にサービス ファイルを作成します:
 
 ```ini
 [Unit]
@@ -78,30 +78,30 @@ Environment="PATH=$PATH"
 WantedBy=multi-user.target
 ```
 
-Then start the service:
+次にサービスを開始します:
 
 ```shell
 sudo systemctl daemon-reload
 sudo systemctl enable ollama
 ```
 
-### Install CUDA drivers (optional)
+### CUDA ドライバーをインストールします（オプション）
 
-[Download and install](https://developer.nvidia.com/cuda-downloads) CUDA.
+[CUDA をダウンロードしてインストール](https://developer.nvidia.com/cuda-downloads)
 
-Verify that the drivers are installed by running the following command, which should print details about your GPU:
+以下のコマンドを実行してドライバーがインストールされたことを確認します。GPU の詳細が表示されます:
 
 ```shell
 nvidia-smi
 ```
 
-### Install AMD ROCm drivers (optional)
+### AMD ROCm ドライバーのインストール（オプション）
 
-[Download and Install](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/tutorial/quick-start.html) ROCm v6.
+[ダウンロードとインストール](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/tutorial/quick-start.html) ROCm v6.
 
-### Start Ollama
+### Ollama を起動します
 
-Start Ollama and verify it is running:
+Ollama を起動し、実行されていることを確認します:
 
 ```shell
 sudo systemctl start ollama
@@ -109,63 +109,59 @@ sudo systemctl status ollama
 ```
 
 > [!NOTE]
-> While AMD has contributed the `amdgpu` driver upstream to the official linux
-> kernel source, the version is older and may not support all ROCm features. We
-> recommend you install the latest driver from
-> [AMD](https://www.amd.com/en/support/download/linux-drivers.html) for best support
-> of your Radeon GPU.
+> AMDは公式Linuxカーネルソースに`amdgpu`ドライバをアップストリーム提供していますが、バージョンが古く、ROCmのすべての機能をサポートしていない可能性があります。Radeon GPUを最適にサポートするには、[AMD](https://www.amd.com/en/support/download/linux-drivers.html)から最新のドライバをインストールすることをお勧めします。
 
-## Customizing
+## カスタマイズ
 
-To customize the installation of Ollama, you can edit the systemd service file or the environment variables by running:
+Ollamaのインストールをカスタマイズするには、次のコマンドを実行して、systemdのサービスファイルまたは環境変数を編集します:
 
 ```shell
 sudo systemctl edit ollama
 ```
 
-Alternatively, create an override file manually in `/etc/systemd/system/ollama.service.d/override.conf`:
+あるいは、`/etc/systemd/system/ollama.service.d/override.conf` にオーバーライド ファイルを手動で作成します。
 
 ```ini
 [Service]
 Environment="OLLAMA_DEBUG=1"
 ```
 
-## Updating
+## アップデート
 
-Update Ollama by running the install script again:
+インストールスクリプトを再度実行して、Ollama をアップデートします:
 
 ```shell
 curl -fsSL https://ollama.com/install.sh | sh
 ```
 
-Or by re-downloading Ollama:
+または、Ollama を再度ダウンロードします。
 
 ```shell
 curl -L https://ollama.com/download/ollama-linux-amd64.tgz -o ollama-linux-amd64.tgz
 sudo tar -C /usr -xzf ollama-linux-amd64.tgz
 ```
 
-## Installing specific versions
+## 特定のバージョンのインストール
 
-Use `OLLAMA_VERSION` environment variable with the install script to install a specific version of Ollama, including pre-releases. You can find the version numbers in the [releases page](https://github.com/ollama/ollama/releases).
+インストールスクリプトで `OLLAMA_VERSION` 環境変数を使用すると、プレリリース版を含む特定のバージョンの Ollama をインストールできます。バージョン番号は [リリースページ](https://github.com/ollama/ollama/releases) で確認できます。
 
-For example:
+例:
 
 ```shell
 curl -fsSL https://ollama.com/install.sh | OLLAMA_VERSION=0.5.7 sh
 ```
 
-## Viewing logs
+## ログの表示
 
-To view logs of Ollama running as a startup service, run:
+スタートアップサービスとして実行されているOllamaのログを表示するには、次のコマンドを実行します。
 
 ```shell
 journalctl -e -u ollama
 ```
 
-## Uninstall
+## アンインストール
 
-Remove the ollama service:
+ollama サービスを削除します。
 
 ```shell
 sudo systemctl stop ollama
@@ -173,13 +169,13 @@ sudo systemctl disable ollama
 sudo rm /etc/systemd/system/ollama.service
 ```
 
-Remove the ollama binary from your bin directory (either `/usr/local/bin`, `/usr/bin`, or `/bin`):
+bin ディレクトリ (`/usr/local/bin`、`/usr/bin`、または `/bin`) から ollama バイナリを削除します:
 
 ```shell
 sudo rm $(which ollama)
 ```
 
-Remove the downloaded models and Ollama service user and group:
+ダウンロードしたモデルと Ollama サービスのユーザーとグループを削除します:
 
 ```shell
 sudo rm -r /usr/share/ollama
@@ -187,7 +183,7 @@ sudo userdel ollama
 sudo groupdel ollama
 ```
 
-Remove installed libraries:
+インストールされたライブラリを削除します:
 
 ```shell
 sudo rm -rf /usr/local/lib/ollama

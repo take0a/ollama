@@ -1,9 +1,9 @@
 # Ollama Model File
 
 > [!NOTE]
-> `Modelfile` syntax is in development
+> `Modelfile` 構文は現在開発中です。
 
-A model file is the blueprint to create and share models with Ollama.
+モデルファイルは、Ollama でモデルを作成および共有するための設計図です。
 
 ## Table of Contents
 
@@ -26,28 +26,28 @@ A model file is the blueprint to create and share models with Ollama.
 
 ## Format
 
-The format of the `Modelfile`:
+`Modelfile` の形式:
 
 ```
 # comment
 INSTRUCTION arguments
 ```
 
-| Instruction                         | Description                                                    |
-| ----------------------------------- | -------------------------------------------------------------- |
-| [`FROM`](#from-required) (required) | Defines the base model to use.                                 |
-| [`PARAMETER`](#parameter)           | Sets the parameters for how Ollama will run the model.         |
-| [`TEMPLATE`](#template)             | The full prompt template to be sent to the model.              |
-| [`SYSTEM`](#system)                 | Specifies the system message that will be set in the template. |
-| [`ADAPTER`](#adapter)               | Defines the (Q)LoRA adapters to apply to the model.            |
-| [`LICENSE`](#license)               | Specifies the legal license.                                   |
-| [`MESSAGE`](#message)               | Specify message history.                                       |
+| Instruction                         | Description        |
+| ----------------------------------- | ----------------- |
+| [`FROM`](#from-required) (必須) | 使用するベースモデルを定義します。 |
+| [`PARAMETER`](#parameter) | Ollama がモデルを実行する方法のパラメータを設定します。 |
+| [`TEMPLATE`](#template) | モデルに送信される完全なプロンプトテンプレート。 |
+| [`SYSTEM`](#system) | テンプレートに設定されるシステムメッセージを指定します。 |
+| [`ADAPTER`](#adapter) | モデルに適用する (Q)LoRA アダプターを定義します。 |
+| [`LICENSE`](#license) | 法的ライセンスを指定します。 |
+| [`MESSAGE`](#message) | メッセージ履歴を指定します。 |
 
 ## Examples
 
-### Basic `Modelfile`
+### 基本的な `Modelfile`
 
-An example of a `Modelfile` creating a mario blueprint:
+mario の設計図を作成する `Modelfile` の例:
 
 ```
 FROM llama3.2
@@ -60,14 +60,14 @@ PARAMETER num_ctx 4096
 SYSTEM You are Mario from super mario bros, acting as an assistant.
 ```
 
-To use this:
+使い方：
 
-1. Save it as a file (e.g. `Modelfile`)
-2. `ollama create choose-a-model-name -f <location of the file e.g. ./Modelfile>`
+1. ファイルとして保存します（例：`Modelfile`）。
+2. `ollama create choose-a-model-name -f <ファイルの場所（例：./Modelfile>）`
 3. `ollama run choose-a-model-name`
-4. Start using the model!
+4. モデルの使用を開始します！
 
-To view the Modelfile of a given model, use the `ollama show --modelfile` command.
+特定のモデルのModelfileを表示するには、`ollama show --modelfile` コマンドを使用します。
 
 ```shell
 ollama show --modelfile llama3.2
@@ -98,13 +98,13 @@ ollama show --modelfile llama3.2
 
 ### FROM (Required)
 
-The `FROM` instruction defines the base model to use when creating a model.
+`FROM` 命令は、モデルを作成するときに使用する基本モデルを定義します。
 
 ```
 FROM <model name>:<tag>
 ```
 
-#### Build from existing model
+#### 既存のモデルから構築
 
 ```
 FROM llama3.2
@@ -115,63 +115,63 @@ A list of available base models:
 Additional models can be found at:
 <https://ollama.com/library>
 
-#### Build from a Safetensors model
+#### Safetensorsモデルから構築する
 
 ```
 FROM <model directory>
 ```
 
-The model directory should contain the Safetensors weights for a supported architecture.
+モデルディレクトリには、サポートされているアーキテクチャの Safetensors の重みが含まれている必要があります。
 
-Currently supported model architectures:
+現在サポートされているモデルアーキテクチャ:
   * Llama (including Llama 2, Llama 3, Llama 3.1, and Llama 3.2)
   * Mistral (including Mistral 1, Mistral 2, and Mixtral)
   * Gemma (including Gemma 1 and Gemma 2)
   * Phi3
 
-#### Build from a GGUF file
+#### GGUFファイルからビルドする
 
 ```
 FROM ./ollama-model.gguf
 ```
 
-The GGUF file location should be specified as an absolute path or relative to the `Modelfile` location.
+GGUF ファイルの場所は、絶対パスまたは `Modelfile` の場所に対する相対パスとして指定する必要があります。
 
 
 ### PARAMETER
 
-The `PARAMETER` instruction defines a parameter that can be set when the model is run.
+`PARAMETER` 命令は、モデルの実行時に設定できるパラメータを定義します。
 
 ```
 PARAMETER <parameter> <parametervalue>
 ```
 
-#### Valid Parameters and Values
+#### 有効なパラメータと値
 
 | Parameter      | Description                                                                                                                                                                                                                                             | Value Type | Example Usage        |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | -------------------- |
-| num_ctx        | Sets the size of the context window used to generate the next token. (Default: 2048)                                                                                                                                                                    | int        | num_ctx 4096         |
-| repeat_last_n  | Sets how far back for the model to look back to prevent repetition. (Default: 64, 0 = disabled, -1 = num_ctx)                                                                                                                                           | int        | repeat_last_n 64     |
-| repeat_penalty | Sets how strongly to penalize repetitions. A higher value (e.g., 1.5) will penalize repetitions more strongly, while a lower value (e.g., 0.9) will be more lenient. (Default: 1.1)                                                                     | float      | repeat_penalty 1.1   |
-| temperature    | The temperature of the model. Increasing the temperature will make the model answer more creatively. (Default: 0.8)                                                                                                                                     | float      | temperature 0.7      |
-| seed           | Sets the random number seed to use for generation. Setting this to a specific number will make the model generate the same text for the same prompt. (Default: 0)                                                                                       | int        | seed 42              |
-| stop           | Sets the stop sequences to use. When this pattern is encountered the LLM will stop generating text and return. Multiple stop patterns may be set by specifying multiple separate `stop` parameters in a modelfile.                                      | string     | stop "AI assistant:" |
-| num_predict    | Maximum number of tokens to predict when generating text. (Default: -1, infinite generation)                                                                                                                                   | int        | num_predict 42       |
-| top_k          | Reduces the probability of generating nonsense. A higher value (e.g. 100) will give more diverse answers, while a lower value (e.g. 10) will be more conservative. (Default: 40)                                                                        | int        | top_k 40             |
-| top_p          | Works together with top-k. A higher value (e.g., 0.95) will lead to more diverse text, while a lower value (e.g., 0.5) will generate more focused and conservative text. (Default: 0.9)                                                                 | float      | top_p 0.9            |
-| min_p          | Alternative to the top_p, and aims to ensure a balance of quality and variety. The parameter *p* represents the minimum probability for a token to be considered, relative to the probability of the most likely token. For example, with *p*=0.05 and the most likely token having a probability of 0.9, logits with a value less than 0.045 are filtered out. (Default: 0.0) | float      | min_p 0.05            |
+| num_ctx | 次のトークンを生成するために使用されるコンテキスト ウィンドウのサイズを設定します。(デフォルト: 2048) | int | num_ctx 4096 |
+| repeat_last_n | 繰り返しを防ぐためにモデルがどれだけ過去までさかのぼるかを設定します。(デフォルト: 64、0 = 無効、-1 = num_ctx) | int | repeat_last_n 64 |
+| repeat_penalty | 繰り返しに対するペナルティの強さを設定します。値が高いほど (例: 1.5) 繰り返しに対するペナルティが強くなり、値が低いほど (例: 0.9) 繰り返しに対するペナルティが緩くなります。(デフォルト: 1.1) | float | repeat_penalty 1.1 |
+| temperature | モデルの温度。温度を上げると、モデルはより創造的に回答するようになります。(デフォルト: 0.8) | float | temperature 0.7 |
+| seed | 生成に使用する乱数シードを設定します。これを特定の数値に設定すると、モデルは同じプロンプトに対して同じテキストを生成します。(デフォルト: 0) | int | seed 42 |
+| stop | 使用する停止シーケンスを設定します。このパターンに遭遇すると、LLM はテキストの生成を停止して戻ります。モデルファイルで複数の個別の `stop` パラメータを指定することで、複数の停止パターンを設定できます。 | string | stop "AI assistant:" |
+| num_predict | テキスト生成時に予測するトークンの最大数。(デフォルト: -1、無限生成) | int | num_predict 42 |
+| top_k | 意味不明な回答が生成される確率を減らします。値が大きいほど(例: 100)、回答の多様性が増し、値が低いほど(例: 10)、回答の安定性が増します。(デフォルト: 40) | int | top_k 40 |
+| top_p | top-k と連動します。値が高いほど (例: 0.95) 多様なテキストが生成され、値が低いほど (例: 0.5) 焦点が絞られ保守的なテキストが生成されます。(既定値: 0.9) | float | top_p 0.9 |
+| min_p | top_p の代替であり、品質と多様性のバランスを確保することを目的としています。パラメーター *p* は、最も可能性の高いトークンの確率に対する、トークンが考慮される最小確率を表します。たとえば、*p*=0.05 で、最も可能性の高いトークンの確率が 0.9 の場合、値が 0.045 未満のロジットは除外されます。(既定値: 0.0) | float | min_p 0.05 |
 
 ### TEMPLATE
 
-`TEMPLATE` of the full prompt template to be passed into the model. It may include (optionally) a system message, a user's message and the response from the model. Note: syntax may be model specific. Templates use Go [template syntax](https://pkg.go.dev/text/template).
+モデルに渡される完全なプロンプトテンプレートの `TEMPLATE` です。システムメッセージ、ユーザーメッセージ、モデルからのレスポンス（オプション）を含めることができます。注: 構文はモデルによって異なる場合があります。テンプレートはGoの[テンプレート構文](https://pkg.go.dev/text/template)を使用します。
 
-#### Template Variables
+#### テンプレート変数
 
 | Variable          | Description                                                                                   |
 | ----------------- | --------------------------------------------------------------------------------------------- |
-| `{{ .System }}`   | The system message used to specify custom behavior.                                           |
-| `{{ .Prompt }}`   | The user prompt message.                                                                      |
-| `{{ .Response }}` | The response from the model. When generating a response, text after this variable is omitted. |
+| `{{ .System }}` | カスタム動作を指定するために使用されるシステムメッセージ。|
+| `{{ .Prompt }}` | ユーザープロンプトメッセージ。|
+| `{{ .Response }}` | モデルからの応答。応答を生成する際、この変数の後のテキストは省略されます。|
 
 ```
 TEMPLATE """{{ if .System }}<|im_start|>system
@@ -184,7 +184,7 @@ TEMPLATE """{{ if .System }}<|im_start|>system
 
 ### SYSTEM
 
-The `SYSTEM` instruction specifies the system message to be used in the template, if applicable.
+`SYSTEM` 命令は、該当する場合にテンプレートで使用されるシステム メッセージを指定します。
 
 ```
 SYSTEM """<system message>"""
@@ -192,7 +192,7 @@ SYSTEM """<system message>"""
 
 ### ADAPTER
 
-The `ADAPTER` instruction specifies a fine tuned LoRA adapter that should apply to the base model. The value of the adapter should be an absolute path or a path relative to the Modelfile. The base model should be specified with a `FROM` instruction. If the base model is not the same as the base model that the adapter was tuned from the behaviour will be erratic.
+`ADAPTER`命令は、ベースモデルに適用する微調整されたLoRAアダプタを指定します。アダプタの値は絶対パス、またはモデルファイルからの相対パスで指定します。ベースモデルは`FROM`命令で指定する必要があります。ベースモデルがアダプタの調整元となるベースモデルと異なる場合、動作が不安定になります。
 
 #### Safetensor adapter
 
@@ -213,7 +213,7 @@ ADAPTER ./ollama-lora.gguf
 
 ### LICENSE
 
-The `LICENSE` instruction allows you to specify the legal license under which the model used with this Modelfile is shared or distributed.
+`LICENSE` 命令を使用すると、このモデルファイルで使用されるモデルを共有または配布する場合の法的ライセンスを指定できます。
 
 ```
 LICENSE """
@@ -223,22 +223,22 @@ LICENSE """
 
 ### MESSAGE
 
-The `MESSAGE` instruction allows you to specify a message history for the model to use when responding. Use multiple iterations of the MESSAGE command to build up a conversation which will guide the model to answer in a similar way.
+`MESSAGE`命令を使用すると、モデルが応答時に使用するメッセージ履歴を指定できます。MESSAGEコマンドを複数回繰り返すことで、モデルが同様の回答をするように誘導する会話を構築できます。
 
 ```
 MESSAGE <role> <message>
 ```
 
-#### Valid roles
+#### 有効なロール
 
-| Role      | Description                                                  |
+| ロール | 説明 |
 | --------- | ------------------------------------------------------------ |
-| system    | Alternate way of providing the SYSTEM message for the model. |
-| user      | An example message of what the user could have asked.        |
-| assistant | An example message of how the model should respond.          |
+| system | モデルの SYSTEM メッセージを提供する別の方法。 |
+| user | ユーザーが尋ねた可能性のあるメッセージの例。 |
+| assistant | モデルが応答するべきメッセージの例。 |
 
 
-#### Example conversation
+#### 会話例
 
 ```
 MESSAGE user Is Toronto in Canada?
@@ -250,9 +250,9 @@ MESSAGE assistant yes
 ```
 
 
-## Notes
+## 注記
 
-- the **`Modelfile` is not case sensitive**. In the examples, uppercase instructions are used to make it easier to distinguish it from arguments.
-- Instructions can be in any order. In the examples, the `FROM` instruction is first to keep it easily readable.
+- **`Modelfile` は大文字と小文字を区別しません**。例では、引数と区別しやすくするために、大文字の命令を使用しています。
+- 命令の順序は任意です。例では、読みやすさを考慮して `FROM` 命令を先頭にしています。
 
 [1]: https://ollama.com/library
