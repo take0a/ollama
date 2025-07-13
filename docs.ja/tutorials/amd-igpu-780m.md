@@ -1,56 +1,56 @@
-# Running Ollama on AMD iGPU 780M
+# AMD iGPU 780M で Ollama を実行
 
-Ollama could run on the iGPU 780M of AMD Ryzen CPU at Linux bases on ROCm. There only has a little extra settings than Radeon dGPU like RX7000 series.
+Ollama は、ROCm ベースの Linux 環境で、AMD Ryzen CPU の iGPU 780M 上で動作しました。RX7000 シリーズなどの Radeon dGPU と比べて、若干の設定変更が必要です。
 
-## Keys for usage
-- Ryzen 7000s/8000s CPU with iGPU 780M
-- amdgpu driver and rocm6.0
-- Linux OS is required (Windows and WSL2 are not supported)
-- BIOS must be set to enable the iGPU and dedicate > 1GB RAM to VRAM
-- HSA_OVERRIDE_GFX_VERSION="11.0.0" is set (extral setting for AMD iGPU-780M)
+## 使用上の注意
+- Ryzen 7000s/8000s CPU（iGPU 780M搭載）
+- amdgpuドライバーとrocm6.0
+- Linux OSが必要です（WindowsとWSL2はサポートされていません）
+- BIOSでiGPUを有効にし、1GB以上のRAMをVRAMに割り当てる必要があります
+- HSA_OVERRIDE_GFX_VERSION="11.0.0" が設定されています（AMD iGPU-780M向けの追加設定）
 
-## Prerequisites
-0. Set UMA for iGPU in BIOS. (at least >1GB, recommend to >8GB for Llama3:8b q4_0 model size is 4.7GB)
-1. Install GPU Driver and ROCm
-	Refer to
-	- [AMD ROCm™ documentation — ROCm Documentation](https://rocmdocs.amd.com/en/latest/)
-  	- [AMD ROCm™ Quick start installion](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/tutorial/quick-start.html#rocm-install-quick)
+## 前提条件
+0. BIOSでiGPUのUMAを設定します。(最低1GB以上、Llama3:8b q4_0モデルの場合は8GB以上を推奨。サイズは4.7GBです)
+1. GPUドライバーとROCmをインストールします。
+参照：
+- [AMD ROCm™ドキュメント - ROCmドキュメント](https://rocmdocs.amd.com/en/latest/)
+- [AMD ROCm™クイックスタートインストール](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/tutorial/quick-start.html#rocm-install-quick)
 
-2. Install Ollama
+2. Ollamaをインストールします。
 	
  	*`curl -fsSL https://ollama.com/install.sh | sh`*
 
-## Steps
-The iGPU is not detected by Ollama at default. We need extra steps to enable it.
-1. Stop the ollama.service
+## 手順
+iGPUはデフォルトではOllamaによって検出されません。有効にするには追加の手順が必要です。
+1. ollama.serviceを停止します
    
 	`sudo systemctl stop ollama.service`
 	   
-2. Modify the ollama.service setting to enable ROCm for iGPU 780 w/ ROCm (not work in WSL, need run in Linux)
+2. ollama.service 設定を変更して、iGPU 780 w/ ROCm で ROCm を有効にします (WSL では動作しないため、Linux で実行する必要があります)
 
 	`sudo systemctl edit ollama.service`
 
-	Add the contents into the /etc/systemd/system/ollama.service.d/override.conf and save it.
+	内容を /etc/systemd/system/ollama.service.d/override.conf に追加して保存します。
 
 	```
 	[Service]
 	Environment="HSA_OVERRIDE_GFX_VERSION=11.0.0"
 	```
 
-	Then restart ollama.service with new settings.
+	次に、新しい設定で ollama.service を再起動します。
 
 	  `sudo systemctl restart ollama.service`
 
-3. Run llm with ollama
+3. ollamaでllmを実行する
    
    `ollama run tinyllama`
    
-   Use rocm-smi to watch the utilization of iGPU When run ollama with ROCm.
+   ROCm で ollama を実行するときは、rocm-smi を使用して iGPU の使用率を監視します。
 
 
-### Check iGPU utilizaion
+### GPU使用率を確認
 
-Run `ollama ps` to check if the GPU is working when you run llm with ollama
+ollamaでllmを実行した際にGPUが動作しているかどうかを確認するには、「ollama ps」を実行します。
 
 ```
 $ ollama ps
@@ -75,11 +75,11 @@ $ollama run llama2:latest "where was beethoven born?" --verbose
 	eval rate:            19.26 tokens/s
 ```
 
-## Benchmark
+## ベンチマーク
 
-**Test Platform**：AOOSTAR GEM12 AMD Ryzen 7 8845HS Mini PC
+**テストプラットフォーム**：AOOSTAR GEM12 AMD Ryzen 7 8845HS ミニPC
 
-**Benchmark commands**:
+**ベンチマークコマンド**：
 
 `ollama run tinyllama "where was beethoven born?" --verbose`
 
@@ -93,6 +93,6 @@ $ollama run llama2:latest "where was beethoven born?" --verbose
 | llama3:8b      | 4.7GB      | 16                          |
 | qwen:1.8b      | 1.1GB      | 61                          |
 
-*NOTE* 
-- Performance in Tokens/s
-- LLM is quantized as Q4_0 at default in Ollama
+*注*
+- パフォーマンス（トークン/秒）
+- Ollamaでは、LLMはデフォルトでQ4_0として量子化されます
