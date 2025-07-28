@@ -484,33 +484,33 @@ A single JSON object is returned:
 POST /api/chat
 ```
 
-Generate the next message in a chat with a provided model. This is a streaming endpoint, so there will be a series of responses. Streaming can be disabled using `"stream": false`. The final response object will include statistics and additional data from the request.
+提供されたモデルを使用して、チャットの次のメッセージを生成します。これはストリーミングエンドポイントであるため、一連のレスポンスが返されます。ストリーミングは `"stream": false` で無効にできます。最終的なレスポンスオブジェクトには、リクエストの統計情報と追加データが含まれます。
 
 ### Parameters
 
-- `model`: (required) the [model name](#model-names)
-- `messages`: the messages of the chat, this can be used to keep a chat memory
-- `tools`: list of tools in JSON for the model to use if supported
-- `think`: (for thinking models) should the model think before responding?
+- `model`: (必須) [モデル名](#model-names)
+- `messages`: チャットのメッセージ。チャットメモリの保持に使用できます。
+- `tools`: モデルが使用するツールのリスト（JSON形式）（サポートされている場合）
+- `think`: (思考型モデルの場合) モデルは応答前に考える必要があるかどうか
 
-The `message` object has the following fields:
+`message` オブジェクトには以下のフィールドがあります。
 
-- `role`: the role of the message, either `system`, `user`, `assistant`, or `tool`
-- `content`: the content of the message
-- `thinking`: (for thinking models) the model's thinking process
-- `images` (optional): a list of images to include in the message (for multimodal models such as `llava`)
-- `tool_calls` (optional): a list of tools in JSON that the model wants to use
+- `role`: メッセージの役割（`system`、`user`、`assistant`、`tool` のいずれか）
+- `content`: メッセージの内容
+- `thinking`: （思考モデルの場合）モデルの思考プロセス
+- `images`（オプション）: メッセージに含める画像のリスト（`llava` などのマルチモーダルモデルの場合）
+- `tool_calls`（オプション）: モデルが使用するツールの JSON リスト
 
-Advanced parameters (optional):
+詳細パラメータ（オプション）
 
-- `format`: the format to return a response in. Format can be `json` or a JSON schema. 
-- `options`: additional model parameters listed in the documentation for the [Modelfile](./modelfile.md#valid-parameters-and-values) such as `temperature`
-- `stream`: if `false` the response will be returned as a single response object, rather than a stream of objects
-- `keep_alive`: controls how long the model will stay loaded into memory following the request (default: `5m`)
+- `format`: レスポンスを返す形式。`json` または JSON スキーマを指定できます。
+- `options`: [モデルファイル](./modelfile.md#valid-parameters-and-values) のドキュメントに記載されている追加のモデルパラメータ（`temperature` など）
+- `stream`: `false` の場合、レスポンスはオブジェクトのストリームではなく、単一のレスポンスオブジェクトとして返されます。
+- `keep_alive`: リクエスト後にモデルがメモリにロードされた状態を維持する時間を制御します（デフォルト: `5m`）
 
 ### Structured outputs
 
-Structured outputs are supported by providing a JSON schema in the `format` parameter. The model will generate a response that matches the schema. See the [Chat request (Structured outputs)](#chat-request-structured-outputs) example below.
+`format` パラメータにJSONスキーマを指定することで、構造化出力がサポートされます。モデルはスキーマに一致するレスポンスを生成します。以下の[チャットリクエスト（構造化出力）](#chat-request-structured-outputs)の例をご覧ください。
 
 ### Examples
 
@@ -930,26 +930,26 @@ A single JSON object is returned:
 POST /api/create
 ```
 
-Create a model from:
- * another model;
- * a safetensors directory; or
- * a GGUF file.
+次のものからモデルを作成します:
+* 別のモデル、
+* safetensors ディレクトリ、または
+* GGUF ファイル。
 
-If you are creating a model from a safetensors directory or from a GGUF file, you must [create a blob](#create-a-blob) for each of the files and then use the file name and SHA256 digest associated with each blob in the `files` field.
+safetensors ディレクトリまたは GGUF ファイルからモデルを作成する場合は、ファイルごとに [blob を作成](#create-a-blob) し、各 blob に関連付けられたファイル名と SHA256 ダイジェストを `files` フィールドで使用する必要があります。
 
 ### Parameters
 
-- `model`: name of the model to create
-- `from`: (optional) name of an existing model to create the new model from
-- `files`: (optional) a dictionary of file names to SHA256 digests of blobs to create the model from
-- `adapters`: (optional) a dictionary of file names to SHA256 digests of blobs for LORA adapters
-- `template`: (optional) the prompt template for the model
-- `license`: (optional) a string or list of strings containing the license or licenses for the model
-- `system`: (optional) a string containing the system prompt for the model
-- `parameters`: (optional) a dictionary of parameters for the model (see [Modelfile](./modelfile.md#valid-parameters-and-values) for a list of parameters)
-- `messages`: (optional) a list of message objects used to create a conversation
-- `stream`: (optional) if `false` the response will be returned as a single response object, rather than a stream of objects
-- `quantize` (optional): quantize a non-quantized (e.g. float16) model
+- `model`: 作成するモデルの名前
+- `from`: (オプション) 新しいモデルの作成元となる既存のモデルの名前
+- `files`: (オプション) モデルの作成元となるファイル名とBLOBのSHA256ダイジェストの辞書
+- `adapters`: (オプション) LORAアダプタのBLOBのSHA256ダイジェストのファイル名の辞書
+- `template`: (オプション) モデルのプロンプトテンプレート
+- `license`: (オプション) モデルのライセンスを含む文字列または文字列のリスト
+- `system`: (オプション) モデルのシステムプロンプトを含む文字列
+- `parameters`: (オプション) モデルのパラメータの辞書 (パラメータのリストについては[Modelfile](./modelfile.md#valid-parameters-and-values)を参照してください)
+- `messages`: (オプション) メッセージの会話の作成に使用されるメッセージオブジェクト
+- `stream`: (オプション) `false` の場合、レスポンスはオブジェクトのストリームではなく、単一のレスポンスオブジェクトとして返されます。
+- `quantize` (オプション): 量子化されていないモデル (例: float16) を量子化します。
 
 #### Quantization types
 
@@ -1456,18 +1456,18 @@ If `stream` is set to `false`, then the response is a single JSON object:
 POST /api/embed
 ```
 
-Generate embeddings from a model
+モデルから埋め込みを生成する
 
 ### Parameters
 
-- `model`: name of model to generate embeddings from
-- `input`: text or list of text to generate embeddings for
+- `model`: 埋め込みを生成するモデル名
+- `input`: 埋め込みを生成するテキストまたはテキストリスト
 
-Advanced parameters:
+詳細パラメータ:
 
-- `truncate`: truncates the end of each input to fit within context length. Returns error if `false` and context length is exceeded. Defaults to `true`
-- `options`: additional model parameters listed in the documentation for the [Modelfile](./modelfile.md#valid-parameters-and-values) such as `temperature`
-- `keep_alive`: controls how long the model will stay loaded into memory following the request (default: `5m`)
+- `truncate`: 各入力の末尾をコンテキスト長に収まるように切り詰めます。`false` でコンテキスト長を超えた場合はエラーを返します。デフォルトは `true` です。
+- `options`: [モデルファイル](./modelfile.md#valid-parameters-and-values) のドキュメントに記載されている追加のモデルパラメータ（`temperature` など）
+- `keep_alive`: リクエスト後にモデルがメモリにロードされた状態を維持する時間を制御します（デフォルト: `5m`）
 
 ### Examples
 
@@ -1565,7 +1565,7 @@ A single JSON object will be returned.
 
 ## Generate Embedding
 
-> Note: this endpoint has been superseded by `/api/embed`
+> 注: このエンドポイントは `/api/embed` に置き換えられました
 
 ```
 POST /api/embeddings
